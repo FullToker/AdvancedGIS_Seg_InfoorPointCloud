@@ -5,13 +5,14 @@ from main import (
     keypoints2spheres,
     progressbar,
 )
+import open3d as o3d
 
 
-pc_in = "/Volumes/T7 Shield/AdvancedGIS/read_test/"
+pc_in = "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/"
 pc_out = ""
-filename = "01164_GE006.ply"
+filename = "2C05_1 - Cloud.ply"
 
-winDims = [2000, 2000]
+winDims = [1000, 1000]
 viewCtrl = [0, 0, 1, 0, -1, 0, 400.01, 0.00, 10, 0.08]
 
 # Load Pointcloud
@@ -36,3 +37,7 @@ cloud_colored = colorInlierOutlier(cloud_in, inliers)
 # Visualize colored result
 viewTitle = "RANSAC"
 cloudVisualizer([cloud_colored], viewTitle, winDims, viewCtrl, 1)
+o3d.io.write_point_cloud(
+    "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/processed_2C05_1.ply",
+    cloud_colored,
+)

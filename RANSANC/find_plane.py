@@ -11,7 +11,7 @@ import numpy as np
 
 pc_in = "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/"
 pc_out = ""
-filename = "2C05 - Cloud.ply"
+filename = "2C05 - downsample.ply"
 
 winDims = [1000, 1000]
 viewCtrl = [0, 0, 1, 0, -1, 0, 400.01, 0.00, 10, 0.08]
@@ -67,6 +67,7 @@ out_sphere = keypoints2spheres(
     outs, 0.025, np.array([255, 0, 0])
 )  # create colorized sphere for each outlier point
 
+"""
 cloudVisualizer(
     [segments[i] for i in range(max_plane_idx)] + [rest] + [out_sphere],
     "Combined Segmentation",
@@ -74,6 +75,7 @@ cloudVisualizer(
     viewCtrl,
     1,
 )  # SOLUTION OPTIONAL
+"""
 
 
 # write the result into the files
@@ -82,7 +84,7 @@ for i in range(max_plane_idx):
     combined_cloud += segments[i]
 combined_cloud += rest
 # combined_cloud += out_sphere
-output_file = "plane_2C05.ply"
+output_file = "plane_2C05_downsample.ply"
 o3d.io.write_point_cloud(
     "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/" + output_file,
     combined_cloud,

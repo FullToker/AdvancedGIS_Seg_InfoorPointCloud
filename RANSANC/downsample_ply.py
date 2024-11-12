@@ -27,7 +27,13 @@ def downsample(ply_path: str, out_path: str, flag: int = 0):
 
 
 if __name__ == "__main__":
+    """
     root_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/"
     in_ply = "2C05 - Cloud.ply"
     out_ply = "2C05 - downsample.ply"
+    """
+
+    root_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/"
+    in_ply = "01164_GE006.ply"
+    out_ply = "GE006_downsample.ply"
     downsample(root_path + in_ply, root_path + out_ply)

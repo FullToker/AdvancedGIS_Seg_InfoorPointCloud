@@ -9,15 +9,20 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 import numpy as np
 
+"""
 pc_in = "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/"
 pc_out = ""
 filename = "2C05 - downsample.ply"
+"""
+root_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/"
+in_ply = "GE006_downsample.ply"
+output_file = "plane_GE006_downsample.ply"
 
 winDims = [1000, 1000]
 viewCtrl = [0, 0, 1, 0, -1, 0, 400.01, 0.00, 10, 0.08]
 
 # Load Pointcloud
-cloud_in = readCloud(pc_in, filename)
+cloud_in = readCloud(root_path, in_ply)
 
 # Estimate Normals
 cloud_in.estimate_normals()
@@ -55,6 +60,7 @@ max_label = labels.max()
 print(f"point cloud has {max_label + 1} clusters")
 
 # Colorize found DBSCAN patches as before, again with setting 0 to all outliers
+"""
 colors = plt.get_cmap("Set3")(
     labels / (max_label if max_label > 0 else 1)
 )  # create color pallet as before in DBSCAN
@@ -66,6 +72,7 @@ outs = rest.select_by_index(np.where(labels < 0)[0])  # find outliers
 out_sphere = keypoints2spheres(
     outs, 0.025, np.array([255, 0, 0])
 )  # create colorized sphere for each outlier point
+"""
 
 """
 cloudVisualizer(
@@ -84,9 +91,9 @@ for i in range(max_plane_idx):
     combined_cloud += segments[i]
 combined_cloud += rest
 # combined_cloud += out_sphere
-output_file = "plane_2C05_downsample.ply"
+
 o3d.io.write_point_cloud(
-    "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/" + output_file,
+    root_path + output_file,
     combined_cloud,
 )
 

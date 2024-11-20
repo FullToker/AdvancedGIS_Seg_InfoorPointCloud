@@ -1,30 +1,27 @@
-# Specify the desired PyTorch version
-ARG PYTORCH="1.9.0"
 
-# Use a specific PyTorch CPU-only base image
-FROM pytorch/pytorch:${PYTORCH}-cpu
+FROM pytorch/pytorch:1.9.0
 
-# Remove unnecessary CUDA and GPU-related environment variables for a CPU-only environment
-ENV TORCH_CUDA_ARCH_LIST="" \
-    TORCH_NVCC_FLAGS="" \
-    FORCE_CUDA="0"
+# 设置为 CPU-only 环境
+ENV FORCE_CUDA="0"
 
-# Install PyTorch, torchvision, and torchaudio for CPU
-RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# 避免公共 GPG 密钥错误
+RUN apt-get update && apt-get install -y wget gnupg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install required system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# 安装必要的软件包
+RUN apt-get update && apt-get install -y \
+    ffmpeg libsm6 libxext6 libxrender-dev ninja-build \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install MMEngine, MMCV, and MMDetection
+# 安装 MMEngine、MMCV 和 MMDetection
 RUN pip install openmim && \
-    mim install "mmengine" "mmcv>=2.0.0rc4" "mmdet>=3.0.0"
+    mim install "mmengine>=0.2.0" "mmcv>=2.0.0rc4" "mmdet>=3.0.0"
 
-# Clone and install MMDetection3D
-RUN git clone https://github.com/open-mmlab/mmdetection3d.git -b dev-1.x /mmdetection3d && \
-    cd /mmdetection3d && \
-    pip install --no-cache-dir -e .
+# 安装 MMDetection3D
+RUN conda clean --all -y \
+    && git clone https://github.com/open-mmlab/mmdetection3d.git -b dev-1.x /mmdetection3d \
+    && cd /mmdetection3d \
+    && pip install --no-cache-dir -e .
 
-# Set the working directory to MMDetection3D
 WORKDIR /mmdetection3d

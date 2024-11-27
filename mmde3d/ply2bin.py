@@ -15,7 +15,13 @@ def convert_ply(input_path, output_path):
 
 
 if __name__ == "__main__":
+    """
     convert_ply(
         "/media/fys/T7 Shield/AdvancedGIS/read_test/GE006_downsample.ply",
         "/media/fys/T7 Shield/AdvancedGIS/read_test/GE006_downsample.bin",
+    )
+    """
+    convert_ply(
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/2C05 - downsample.ply",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/2C05_downsample.bin",
     )

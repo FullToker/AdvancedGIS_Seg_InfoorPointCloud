@@ -11,7 +11,7 @@ def convert_ply(input_path, output_path):
     property_names = data[0].dtype.names  # 读取属性名称
     for i, name in enumerate(property_names):  # 通过属性读取数据
         data_np[:, i] = data_pd[name]
-    data_np.astype(np.float32).tofile(output_path)
+    data_np.astype(np.float16).tofile(output_path)
 
 
 if __name__ == "__main__":

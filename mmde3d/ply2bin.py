@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from plyfile import PlyData
+import open3d as o3d
 
 
 def convert_ply(input_path, output_path):
@@ -12,6 +13,13 @@ def convert_ply(input_path, output_path):
     for i, name in enumerate(property_names):  # 通过属性读取数据
         data_np[:, i] = data_pd[name]
     data_np.astype(np.float32).tofile(output_path)
+
+
+def convert_bin_xyz(inpath, outpath):
+    bin_pcd = np.fromfile(inpath, dtype=np.float32)
+    points = bin_pcd.reshape((-1, 3))[:, 0:3]
+    o3d_pcd = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(points))
+    o3d.io.write_point_cloud(outpath, o3d_pcd)
 
 
 if __name__ == "__main__":

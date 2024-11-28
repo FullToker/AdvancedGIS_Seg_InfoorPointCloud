@@ -1,11 +1,11 @@
 import numpy as np
 import json
 import open3d as o3d
-import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 
 
 def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
-    point_cloud = np.fromfile(bin_path, dtype=np.float32).reshape(-1, 6)[:, :3]
+    point_cloud = np.fromfile(binpath, dtype=np.float32).reshape(-1, 6)[:, :3]
     print(f"points in bin: {point_cloud.shape}")
     with open(jsonpath, "r") as f:
         mask = json.load(f)
@@ -15,10 +15,11 @@ def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
         point_cloud
     ), "the number of points in two files are different."
 
-    cmap = cm.get_cmap("viridis", 20)
-    colors = [cmap(i) for i in mask_ls]
+    cmap = plt.get_cmap("viridis", 21)
+    colors = [np.array(cmap(i + 1)[:3], dtype=np.float64) for i in mask_ls]
 
     new_pcd = o3d.geometry.PointCloud()
+
     new_pcd.points = o3d.utility.Vector3dVector(point_cloud)
     new_pcd.colors = o3d.utility.Vector3dVector(colors)
 

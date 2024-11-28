@@ -8,6 +8,7 @@ def convert_ply(input_path, output_path):
     plydata = PlyData.read(input_path)  # 读取文件
     data = plydata.elements[0].data  # 读取数据
     data_pd = pd.DataFrame(data)  # 转换成 DataFrame
+    print(f"the shape of bin is: {data_pd.shape}")
     data_np = np.zeros(data_pd.shape, dtype=np.float32)  # 初始化数组来存储数据
     property_names = data[0].dtype.names  # 读取属性名称
     for i, name in enumerate(property_names):  # 通过属性读取数据
@@ -35,6 +36,13 @@ if __name__ == "__main__":
     )
 
     """
+    """
     convert_bin_xyz(
         "./mmde3d/preds/2C05_downsample.bin", "./mmde3d/preds/2C05_downsample.ply"
+    )
+"""
+    # the shape of bin is: (135216, 6)
+    convert_ply(
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/2C05 - downsample.ply",
+        "./mmde3d/preds/test.bin",
     )

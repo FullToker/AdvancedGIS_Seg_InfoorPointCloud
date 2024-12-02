@@ -9,10 +9,10 @@ def downsample(ply_path: str, out_path: str, flag: int = 0):
 
     # Voxel downsampling
     if flag == 0:
-        voxel_size = 0.05  # size of voxel
+        voxel_size = 0.15  # size of voxel
         downsampled_pcd = pcd.voxel_down_sample(voxel_size)
     elif flag == 1:
-        every_k_points = 5
+        every_k_points = 150
         downsampled_pcd = pcd.uniform_down_sample(every_k_points)
     elif flag == 2:
         sample_ratio = 0.5
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     out_ply = "2C05 - downsample.ply"
     """
 
-    root_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/"
+    root_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/"
     in_ply = "01164_GE006.ply"
-    out_ply = "GE006_downsample.ply"
-    downsample(root_path + in_ply, root_path + out_ply)
+    out_ply = "GE006_downsample_hard.ply"
+    downsample(root_path + in_ply, root_path + out_ply, 1)

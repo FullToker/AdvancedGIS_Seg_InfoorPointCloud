@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
-    point_cloud = np.fromfile(binpath, dtype=np.float32).reshape(-1, 6)[:, :3]
+    point_cloud = np.fromfile(binpath, dtype=np.float32).reshape(-1, 6)
     print(f"points in bin: {point_cloud.shape}")
     with open(jsonpath, "r") as f:
         mask = json.load(f)
@@ -18,10 +18,17 @@ def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
     cmap = plt.get_cmap("viridis", 21)
     colors = [np.array(cmap(i + 1)[:3], dtype=np.float64) for i in mask_ls]
 
-    new_pcd = o3d.geometry.PointCloud()
+    filtered_points = []
+    filtered_colors = []
+    for i, label in enumerate(mask_ls):
+        if label in [0, 1, 2]:  # Only keep points with labels 1 and 2.
+            filtered_points.append(point_cloud[i, 0:3])
+            filtered_colors.append(colors[i])
 
-    new_pcd.points = o3d.utility.Vector3dVector(point_cloud)
-    new_pcd.colors = o3d.utility.Vector3dVector(colors)
+    new_pcd = o3d.geometry.PointCloud()
+    new_pcd.points = o3d.utility.Vector3dVector(filtered_points)
+    print("points done")
+    new_pcd.colors = o3d.utility.Vector3dVector(filtered_colors)
 
     o3d.io.write_point_cloud(outpath, new_pcd)
 

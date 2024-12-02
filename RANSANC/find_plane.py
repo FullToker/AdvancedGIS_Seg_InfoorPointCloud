@@ -13,10 +13,15 @@ import numpy as np
 pc_in = "/Volumes/T7 Shield/AdvancedGIS/read_test/UZH_dataset/2C05/"
 pc_out = ""
 filename = "2C05 - downsample.ply"
-"""
+#
 root_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/"
 in_ply = "GE006_downsample.ply"
 output_file = "plane_GE006_downsample.ply"
+
+"""
+root_path = "./mmde3d/preds/"
+in_ply = "GE006_ssg_sg.ply"
+output_file = "plane_GE006_downsample_hard.ply"
 
 winDims = [1000, 1000]
 viewCtrl = [0, 0, 1, 0, -1, 0, 400.01, 0.00, 10, 0.08]
@@ -27,7 +32,7 @@ cloud_in = readCloud(root_path, in_ply)
 # Estimate Normals
 cloud_in.estimate_normals()
 
-max_plane_idx = 6  # 6 planes
+max_plane_idx = 10  # 6 planes
 distance_threshold = 0.01
 ransac_n = 3
 num_iterations = 1000

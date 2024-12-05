@@ -43,6 +43,6 @@ if __name__ == "__main__":
 """
     # the shape of bin is: (135216, 6)
     convert_ply(
-        "./mmde3d//preds/synth2_downsample.ply",
-        "./mmde3d/preds/synth2_downsample.bin",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_downsample.ply",
+        "./mmde3d/preds/synth1_downsample.bin",
     )

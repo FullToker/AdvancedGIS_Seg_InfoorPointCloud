@@ -1,5 +1,6 @@
 import open3d as o3d
 import numpy as np
+import math
 
 
 def plane_detection(pcd, tolerance=50):
@@ -9,7 +10,7 @@ def plane_detection(pcd, tolerance=50):
     all_planes = []
     while len(current_pcd.points) > tolerance:
         plane_model, inliers = current_pcd.segment_plane(
-            distance_threshold=0.01, ransac_n=5, num_iterations=1000
+            distance_threshold=0.01, ransac_n=3, num_iterations=1000
         )
         if len(inliers) < tolerance:
             break
@@ -37,16 +38,56 @@ def plane_detection(pcd, tolerance=50):
     return current_pcd, planes, all_planes
 
 
+def calNorm_z(point_cloud):
+
+    point_cloud.estimate_normals()
+    normals = np.asarray(point_cloud.normals)
+    average_normal = np.mean(normals, axis=0)
+    average_normal /= np.linalg.norm(average_normal)
+
+    z_axis = np.array([0, 0, 1])
+    cos_theta = np.dot(average_normal, z_axis)
+    angle = math.acos(cos_theta)
+    return angle
+
+
 def main(plypath, outpath):
     pcd = o3d.io.read_point_cloud(plypath)
 
-    remain_pcd, planes_normal, all_planes = plane_detection(pcd, 1000)
+    remain_pcd, planes_normal, all_planes = plane_detection(pcd, 1200)
+    num_planes = len(all_planes)
     # print(np.array(planes).shape)
     combined_cloud = o3d.geometry.PointCloud()
-    for i in range(len(all_planes)):
-        combined_cloud += all_planes[i]
+    print(f"Detected {num_planes} wall planes.")
+
+    num_walls = 0
+    for i in range(num_planes):
+        # remove the ceiling and floor, only leave the wall
+        if i != 0 and i != 1:
+            # combined_cloud += all_planes[i]
+
+            # remove the strip according to the angle
+            angle = calNorm_z(all_planes[i])
+            if abs(angle) > 1.4 and abs(angle) < 1.6:
+                combined_cloud += all_planes[i]
+                num_walls += 1
+
+        """
+        # add the index for each plane ///////////////////--------------------------------------/
+        current_plane = all_planes[i]
+        points = np.asarray(current_plane.points)
+        colors = np.zeros((len(points), 3))
+        colors[:, 0] = (i + 1) / num_planes
+
+        extended_pcd = o3d.geometry.PointCloud()
+        extended_pcd.points = o3d.utility.Vector3dVector(points)
+        extended_pcd.colors = o3d.utility.Vector3dVector(colors)
+        combined_cloud += extended_pcd
+        """
+
     o3d.io.write_point_cloud(outpath, combined_cloud)
     print("done")
+    print(f"Final get {num_walls} walls.")
     """
     for plane in planes:
         plane.paint_uniform_color(np.random.rand(3))
@@ -61,6 +102,7 @@ def main(plypath, outpath):
 
 # main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")
 main(
-    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1.ply",
-    r"./mmde3d/preds/synth1_nonsub_plane.ply",
+    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_sg_clean.ply",
+    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_wall_clean.ply",
+    # r"./mmde3d/preds/synth1_wall_plane.ply",
 )

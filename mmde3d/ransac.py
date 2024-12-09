@@ -51,7 +51,9 @@ def calNorm_z(point_cloud):
     return angle
 
 
-def main(plypath, outpath):
+def get_wall(
+    plypath, outpath, index_txt=r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/"
+):
     pcd = o3d.io.read_point_cloud(plypath)
 
     remain_pcd, planes_normal, all_planes = plane_detection(pcd, 1200)
@@ -61,6 +63,7 @@ def main(plypath, outpath):
     print(f"Detected {num_planes} wall planes.")
 
     num_walls = 0
+    final_index = []
     for i in range(num_planes):
         # remove the ceiling and floor, only leave the wall
         if i != 0 and i != 1:
@@ -71,6 +74,8 @@ def main(plypath, outpath):
             if abs(angle) > 1.4 and abs(angle) < 1.6:
                 combined_cloud += all_planes[i]
                 num_walls += 1
+                final_index.append(plane_index[i])
+                print(plane_index[i].shape)
 
         """
         # add the index for each plane ///////////////////--------------------------------------/
@@ -88,21 +93,15 @@ def main(plypath, outpath):
     o3d.io.write_point_cloud(outpath, combined_cloud)
     print("done")
     print(f"Final get {num_walls} walls.")
-    """
-    for plane in planes:
-        plane.paint_uniform_color(np.random.rand(3))
-
-
-    mesh_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(
-        size=5.0, origin=[0, 0, 0]
-    )
-    o3d.visualization.draw_geometries([remain_pcd, *planes, mesh_frame])
-    """
+    with open(index_txt + "index_output.txt", "w") as f:
+        for array in final_index:
+            line = " ".join(map(str, array)) + "\n"
+            f.write(line)
 
 
 # main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")
-main(
+get_wall(
     r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_sg_clean.ply",
-    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_wall_clean.ply",
+    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_wall_clean_index.ply",
     # r"./mmde3d/preds/synth1_wall_plane.ply",
 )

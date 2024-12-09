@@ -1,5 +1,6 @@
 import numpy as np
 import open3d as o3d
+from scipy.spatial import KDTree
 
 def load_point_cloud(file_path):
     """
@@ -33,7 +34,7 @@ def compute_curvature(eigenvalues):
     curvature = eigenvalues[0] / np.sum(eigenvalues)
     return curvature
 
-def detect_edges_and_estimate_normals(pcd, k_neighbors=30, curvature_threshold=0.01):
+def detect_edges_and_estimate_normals(pcd, k_neighbors=50, curvature_threshold=0.02):
     """
     Perform edge detection and normal estimation using PCA for the point cloud data.
     """
@@ -74,7 +75,7 @@ def detect_edges_and_estimate_normals(pcd, k_neighbors=30, curvature_threshold=0
     
     return np.array(normals), edge_points, pcd
 
-def segment_point_cloud(pcd, k_neighbors=30, curvature_threshold=0.01):
+def segment_point_cloud(pcd, k_neighbors=50, curvature_threshold=0.02):
     """
     Perform PCA-based segmentation on the point cloud data.
     """
@@ -120,6 +121,46 @@ def segment_point_cloud(pcd, k_neighbors=30, curvature_threshold=0.01):
     
     return segments
 
+from scipy.spatial import KDTree
+
+def batch_merge_segments(segments, points, distance_threshold=0.1):
+    """
+    Efficiently merge small segments using KD-Tree for bulk nearest neighbor queries.
+    """
+    # Create a KD-Tree for efficient spatial queries
+    segment_centroids = np.array([np.mean(points[seg], axis=0) for seg in segments])
+    tree = KDTree(segment_centroids)
+
+    # Find segments within the distance threshold
+    pairs_to_merge = tree.query_pairs(r=distance_threshold)
+
+    # Initialize a mapping of segments to be merged
+    segment_mapping = {i: i for i in range(len(segments))}
+
+    def find_root(segment_id):
+        while segment_mapping[segment_id] != segment_id:
+            segment_id = segment_mapping[segment_id]
+        return segment_id
+
+    # Merge segments based on query pairs
+    for i, j in pairs_to_merge:
+        root_i = find_root(i)
+        root_j = find_root(j)
+        if root_i != root_j:
+            segment_mapping[root_j] = root_i
+
+    # Group segments based on the final mapping
+    merged_segments = {}
+    for seg_idx, seg in enumerate(segments):
+        root = find_root(seg_idx)
+        if root not in merged_segments:
+            merged_segments[root] = []
+        merged_segments[root].extend(seg)
+
+    return list(merged_segments.values())
+
+
+
 def save_ply(pcd, filename):
     """
     Save the point cloud to a PLY file.
@@ -132,17 +173,15 @@ def visualize_segments(pcd, segments):
     Visualize segmented regions of the point cloud with different colors.
     """
     points = np.asarray(pcd.points)
-    colors = np.asarray(pcd.colors)
-    if len(colors) == 0:
-        colors = np.zeros_like(points)
+    colors = np.zeros_like(points)  # Initialize colors with zeros
 
     for segment in segments:
-        color = np.random.rand(3)
+        random_color = np.random.rand(3)
         for idx in segment:
-            colors[idx] = color
+            colors[idx] = random_color
 
     pcd.colors = o3d.utility.Vector3dVector(colors)
-    o3d.visualization.draw_geometries([pcd])
+    
 
 if __name__ == "__main__":
     # Load point cloud data
@@ -152,19 +191,21 @@ if __name__ == "__main__":
     # Perform edge detection and normal estimation
     normals, edge_points, pcd_with_edges = detect_edges_and_estimate_normals(pcd)
 
-    # Visualizing the result
-    print("Visualizing edge points and normals...")
-    o3d.visualization.draw_geometries([pcd])  # Visualization of edge points
-
     # Save edge-detected result
     save_ply(pcd_with_edges, "edge_detected_output.ply")
+    o3d.visualization.draw_geometries([pcd])
 
     # Perform segmentation
-    print("Performing segmentation...")
     segments = segment_point_cloud(pcd)
 
+    # Merge small segments to reduce over-segmentation
+    print("Merging small segments...")
+    points = np.asarray(pcd.points)
+    segments = batch_merge_segments(segments, points)
+    print(f"Segments after merging: {len(segments)}")
+
     # Visualize segmented point cloud
-    print("Visualizing segmentation...")
+    print("Performing segmentation...")
     visualize_segments(pcd, segments)
 
     # Save the segmented point cloud

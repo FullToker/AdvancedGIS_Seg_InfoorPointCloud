@@ -52,7 +52,9 @@ def calNorm_z(point_cloud):
 
 
 def get_wall(
-    plypath, outpath, index_txt=r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/"
+    plypath,
+    outpath,
+    wall_path=r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/",
 ):
     pcd = o3d.io.read_point_cloud(plypath)
 
@@ -63,7 +65,6 @@ def get_wall(
     print(f"Detected {num_planes} wall planes.")
 
     num_walls = 0
-    final_index = []
     for i in range(num_planes):
         # remove the ceiling and floor, only leave the wall
         if i != 0 and i != 1:
@@ -73,9 +74,12 @@ def get_wall(
             angle = calNorm_z(all_planes[i])
             if abs(angle) > 1.4 and abs(angle) < 1.6:
                 combined_cloud += all_planes[i]
+
+                # save each wall to a single ply file in wall folder
+                file = wall_path + f"wall{num_walls}.ply"
+                o3d.io.write_point_cloud(file, all_planes[i])
+
                 num_walls += 1
-                final_index.append(plane_index[i])
-                print(plane_index[i].shape)
 
         """
         # add the index for each plane ///////////////////--------------------------------------/
@@ -93,10 +97,6 @@ def get_wall(
     o3d.io.write_point_cloud(outpath, combined_cloud)
     print("done")
     print(f"Final get {num_walls} walls.")
-    with open(index_txt + "index_output.txt", "w") as f:
-        for array in final_index:
-            line = " ".join(map(str, array)) + "\n"
-            f.write(line)
 
 
 # main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")

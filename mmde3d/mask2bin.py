@@ -34,9 +34,9 @@ def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
 
 
 if __name__ == "__main__":
-    bin_path = "./mmde3d/preds/synth1_downsample.bin"
-    json_path = "./mmde3d/preds/synth1_downsample.json"
-    ply_path = "./mmde3d/preds/synth1_msg_sg.ply"
+    bin_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/GE006_downsample_hard.ply"
+    json_path = "./mmde3d/ ./preds/"
+    ply_path = "./mmde3d/preds/synth1_sg.ply"
 
     mask_bin_xyz(bin_path, json_path, ply_path)
 

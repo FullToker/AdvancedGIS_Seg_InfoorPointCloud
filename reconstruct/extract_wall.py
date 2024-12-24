@@ -1,7 +1,14 @@
+"""
+ extract the wall model from clean wall point cloud
+Created by Yushuo
+"""
+
 import numpy as np
 import open3d as o3d
 import os
 import glob
+from shapely.geometry import Polygon, MultiPoint
+import matplotlib.pyplot as plt
 
 
 def read_arrays(file_path):
@@ -97,6 +104,43 @@ def wall2line(
     return line_ls
 
 
+# i want to find the mimimum convex of the floor plan
+def find_convex(
+    infloder="/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/wall_clean/",
+):
+    pattern = os.path.join(infloder, "*.ply")
+    num_wall = 0
+    all_points = []  # store all points of walls, (num,3)
+    all_walls = []  # store all points of each wall (len, num, 2) only xy
+    for inpath in glob.glob(pattern):
+        num_wall += 1
+        pcd = o3d.io.read_point_cloud(inpath)
+        xypts = np.asarray(pcd.points)[:, :2]
+        all_walls.append(xypts)
+
+    all_points = np.vstack(all_walls)
+    print(all_points.shape)
+
+    # calculate the convex hull
+    hull = MultiPoint(all_points).convex_hull
+    x_coords, y_coords = hull.exterior.coords.xy  # Separate x and y coordinates
+    hull_coords = list(zip(x_coords, y_coords))
+    print("Coords of convex hull is:", hull_coords)
+
+    # visualization ----//------------------------------
+    x, y = zip(*all_points)
+    plt.scatter(x, y, color="blue", label="Original Points")
+    hull_x, hull_y = zip(*hull_coords)
+    plt.plot(hull_x, hull_y, color="red", label="Convex Hull")
+
+    # Add labels and legend
+    plt.title("Convex Hull Visualization")
+    plt.legend()
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.show()
+
+
 if __name__ == "__main__":
 
     # inpath = "./mmde3d/preds/synth1_wall_plane.ply"
@@ -110,5 +154,4 @@ if __name__ == "__main__":
     project2xy(inpath, outpath)
     """
 
-    line_ls = wall2line()
-    print(line_ls)
+    find_convex()

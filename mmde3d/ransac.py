@@ -67,16 +67,18 @@ def get_wall(
     num_walls = 0
     for i in range(num_planes):
         # remove the ceiling and floor, only leave the wall
-        if i != 0 and i != 1:
+        if i == 0 or i == 1:
+            # if i != 0 and i != 1:
             # combined_cloud += all_planes[i]
 
             # remove the strip according to the angle
             angle = calNorm_z(all_planes[i])
-            if abs(angle) > 1.4 and abs(angle) < 1.6:
+            # if abs(angle) > 1.4 and abs(angle) < 1.6:
+            if True:
                 combined_cloud += all_planes[i]
 
                 # save each wall to a single ply file in wall folder
-                file = wall_path + f"wall{num_walls}.ply"
+                file = wall_path + f"floor{num_walls}.ply"
                 o3d.io.write_point_cloud(file, all_planes[i])
 
                 num_walls += 1
@@ -102,6 +104,6 @@ def get_wall(
 # main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")
 get_wall(
     r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_sg_clean.ply",
-    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_wall_clean_index.ply",
+    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_floor_clean_index.ply",
     # r"./mmde3d/preds/synth1_wall_plane.ply",
 )

@@ -81,17 +81,37 @@ def filter_wall(infloder="/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall
         remove_outliers(file_path, 0)
 
 
+def line_intersection(line1, line2):
+    """
+    calculate the intersections
+    return: (x, y) or none
+    """
+    [A1, B1, C1] = line1
+    [A2, B2, C2] = line2
+
+    det = A1 * B2 - A2 * B1
+    if np.isclose(det, 0):
+        return None
+
+    x = (B1 * C2 - B2 * C1) / det
+    y = (A2 * C1 - A1 * C2) / det
+    return [x, y]
+
+
 def wall2line(
     infloder="/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/wall_clean/",
 ):
     # remove wall 14;
     line_ls = []
+    all_walls =[]
     pattern = os.path.join(infloder, "*.ply")
     num_wall = 0
     for inpath in glob.glob(pattern):
         num_wall += 1
         pcd = o3d.io.read_point_cloud(inpath)
         points_2d = np.asarray(pcd.points)[:, :2]
+        all_walls.append(points_2d)
+
         m, b = np.polyfit(points_2d[:, 0], points_2d[:, 1], 1)
         A = m
         B = -1
@@ -100,8 +120,18 @@ def wall2line(
         line_ls.append([A, B, C])
 
     # build the matrix of the intersection;
+    # only iterate the half matrix
+    intersections = [[np.nan for _ in range(num_wall)] for _ in range(num_wall)]
+    for ii in range(num_wall - 1):
+        for jj in range(ii + 1, num_wall):
+            line1 = line_ls[ii]
+            line2 = line_ls[jj]
 
-    return line_ls
+            # two conditions: has intersection and the intersection is close to the original point cloud
+            if (line_intersection(line1, line2) is not None) and :
+                intersections[jj][ii] = line_intersection(line1, line2)
+
+    return intersections
 
 
 # i want to find the mimimum convex of the floor plan
@@ -154,4 +184,4 @@ if __name__ == "__main__":
     project2xy(inpath, outpath)
     """
 
-    find_convex()
+    # print(wall2line())

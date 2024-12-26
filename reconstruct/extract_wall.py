@@ -103,7 +103,7 @@ def wall2line(
 ):
     # remove wall 14;
     line_ls = []
-    all_walls =[]
+    all_walls = []
     pattern = os.path.join(infloder, "*.ply")
     num_wall = 0
     for inpath in glob.glob(pattern):
@@ -128,7 +128,7 @@ def wall2line(
             line2 = line_ls[jj]
 
             # two conditions: has intersection and the intersection is close to the original point cloud
-            if (line_intersection(line1, line2) is not None) and :
+            if line_intersection(line1, line2) is not None:
                 intersections[jj][ii] = line_intersection(line1, line2)
 
     return intersections

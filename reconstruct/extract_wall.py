@@ -9,6 +9,7 @@ import os
 import glob
 from shapely.geometry import Polygon, MultiPoint
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
 
 def read_arrays(file_path):
@@ -98,12 +99,23 @@ def line_intersection(line1, line2):
     return [x, y]
 
 
+def linePoints(a=0, b=0, c=0, ref=[200.0, -150.0]):
+    """given a,b,c for straight line as ax+by+c=0,
+    return a pair of points based on ref values
+    e.g linePoints(-1,1,2) == [(-1.0, -3.0), (1.0, -1.0)]
+    """
+    if a == 0 and b == 0:
+        raise Exception("linePoints: a and b cannot both be zero")
+    return [(-c / a, p) if b == 0 else (p, (-c - a * p) / b) for p in ref]
+
+
 def wall2line(
     infloder="/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/wall_clean/",
 ):
     # remove wall 14;
     line_ls = []
     all_walls = []
+
     pattern = os.path.join(infloder, "*.ply")
     num_wall = 0
     for inpath in glob.glob(pattern):
@@ -112,10 +124,28 @@ def wall2line(
         points_2d = np.asarray(pcd.points)[:, :2]
         all_walls.append(points_2d)
 
+        model = LinearRegression()
+        x_data = points_2d[:, 0].reshape(-1, 1)
+        y_data = points_2d[:, 1].reshape(-1, 1)
+        model.fit(x_data, y_data)
+        slope = model.coef_[0]
+        intercept = model.intercept_
+
+        """
+        plt.scatter(x_data, y_data, color="blue", label="Data Points")
+        plt.plot(x_data, slope * x_data + intercept, color="red", label="Fitted Line")
+        plt.title(f"{inpath}")
+        plt.show()
+        """
+
         m, b = np.polyfit(points_2d[:, 0], points_2d[:, 1], 1)
+
+        """print the fit value"""
+        print(f"the fitted result is {slope},{intercept} && {m},{b}\n")
+
         A = m
         B = -1
-        C = -b
+        C = b
 
         line_ls.append([A, B, C])
 
@@ -130,6 +160,35 @@ def wall2line(
             # two conditions: has intersection and the intersection is close to the original point cloud
             if line_intersection(line1, line2) is not None:
                 intersections[jj][ii] = line_intersection(line1, line2)
+
+    """draw the wall line and filtered intersections"""
+    fig, ax = plt.subplots()
+    for ii in range(num_wall):
+        ax.axline(
+            *linePoints(a=line_ls[ii][0], b=line_ls[ii][1], c=line_ls[ii][2]),
+            color="blue",
+        )
+
+    """filtered intersection from original matrix"""
+    valid_intersections = np.array(
+        [
+            item
+            for sublist in intersections
+            for item in sublist
+            if isinstance(item, list)
+        ]
+    )
+    """
+    np.array(
+        [
+            elem
+            for sublist in intersections
+            for elem in sublist
+            if elem is not None and not np.isnan(elem)
+        ]
+    )"""
+    # ax.plot(valid_intersections[:, 0], valid_intersections[:, 1], "ro")
+    plt.show()
 
     return intersections
 
@@ -185,3 +244,4 @@ if __name__ == "__main__":
     """
 
     # print(wall2line())
+    wall2line()

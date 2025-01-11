@@ -115,6 +115,7 @@ def wall2line(
     # remove wall 14;
     line_ls = []
     all_walls = []
+    color_walls = []
 
     pattern = os.path.join(infloder, "*.ply")
     num_wall = 0
@@ -122,7 +123,10 @@ def wall2line(
         num_wall += 1
         pcd = o3d.io.read_point_cloud(inpath)
         points_2d = np.asarray(pcd.points)[:, :2]
+        colors = np.asarray(pcd.colors)[0, :]
+
         all_walls.append(points_2d)
+        color_walls.append(colors)
 
         model = LinearRegression()
         x_data = points_2d[:, 0].reshape(-1, 1)
@@ -149,6 +153,8 @@ def wall2line(
 
         line_ls.append([A, B, C])
 
+    # print(f"colors: {color_walls}")
+
     # build the matrix of the intersection;
     # only iterate the half matrix
     intersections = [[np.nan for _ in range(num_wall)] for _ in range(num_wall)]
@@ -166,8 +172,12 @@ def wall2line(
     for ii in range(num_wall):
         ax.axline(
             *linePoints(a=line_ls[ii][0], b=line_ls[ii][1], c=line_ls[ii][2]),
-            color="blue",
+            color=color_walls[ii],
         )
+
+    # restrict the area to a limited range(a little larger than bouding box)
+    ax.set_xlim([-2, 7])
+    ax.set_ylim([-15, 3])
 
     """filtered intersection from original matrix"""
     valid_intersections = np.array(
@@ -193,6 +203,9 @@ def wall2line(
     return intersections
 
 
+"""calculate the convex hull of the floor plan, as well as the bounding box"""
+
+
 # i want to find the mimimum convex of the floor plan
 def find_convex(
     infloder="/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/wall_clean/",
@@ -215,6 +228,13 @@ def find_convex(
     x_coords, y_coords = hull.exterior.coords.xy  # Separate x and y coordinates
     hull_coords = list(zip(x_coords, y_coords))
     print("Coords of convex hull is:", hull_coords)
+    print(f"shapes of coords is {np.shape(hull_coords)}")
+
+    # cal the bounding box of the floor plan
+    mins = np.min(np.asarray(hull_coords), axis=0)
+    maxs = np.max(np.asarray(hull_coords), axis=0)
+    print(f"min_x = {mins[0]}, min_y = {mins[1]}")
+    print(f"max_x = {maxs[0]}, max_y = {maxs[1]}")
 
     # visualization ----//------------------------------
     x, y = zip(*all_points)
@@ -245,3 +265,4 @@ if __name__ == "__main__":
 
     # print(wall2line())
     wall2line()
+    # find_convex()

@@ -93,6 +93,39 @@ def load_point_clouds(ply_files):
         point_clouds.append(pcd)
     return point_clouds
 
+def merge_obj_files(input_dir, output_file="merged_walls.obj"):
+    """Merge multiple .obj files into a single .obj file."""
+    vertices = []
+    faces = []
+    vertex_offset = 0
+    
+    # Step 1: Read all .obj files in the input directory
+    obj_files = [f for f in os.listdir(input_dir) if f.endswith(".obj")]
+    for obj_file in obj_files:
+        mesh = o3d.io.read_triangle_mesh(os.path.join(input_dir, obj_file))
+        
+        # Append vertices
+        vertices.extend(np.asarray(mesh.vertices))
+        
+        # Append faces, adjusting indices with vertex offset
+        faces.extend(np.asarray(mesh.triangles) + vertex_offset)
+        
+        # Update vertex offset
+        vertex_offset += len(mesh.vertices)
+    
+    # Step 2: Create a new mesh with merged vertices and faces
+    merged_mesh = o3d.geometry.TriangleMesh()
+    merged_mesh.vertices = o3d.utility.Vector3dVector(vertices)
+    merged_mesh.triangles = o3d.utility.Vector3iVector(faces)
+    
+    # Compute normals for the merged mesh
+    merged_mesh.compute_vertex_normals()
+    merged_mesh.compute_triangle_normals()
+    
+    # Step 3: Write the merged mesh to a single .obj file
+    o3d.io.write_triangle_mesh(output_file, merged_mesh)
+    print(f"Merged .obj file saved to {output_file}")
+
 def main(ply_files, output_dir="output_models", visualize=False):
     point_clouds = load_point_clouds(ply_files)
     
@@ -132,3 +165,6 @@ if __name__ == "__main__":
         "wall12_clean.ply", "wall13_clean.ply", "wall15_clean.ply"
     ]
     main(ply_files)
+
+    input_dir = "output_models"  # Directory containing individual .obj files
+    merge_obj_files(input_dir)

@@ -5,15 +5,77 @@ import open3d as o3d
 
 
 def convert_ply(input_path, output_path):
-    plydata = PlyData.read(input_path)  # 读取文件
-    data = plydata.elements[0].data  # 读取数据
-    data_pd = pd.DataFrame(data)  # 转换成 DataFrame
-    print(f"the shape of bin is: {data_pd.shape}")
-    data_np = np.zeros(data_pd.shape, dtype=np.float32)  # 初始化数组来存储数据
-    property_names = data[0].dtype.names  # 读取属性名称
-    for i, name in enumerate(property_names):  # 通过属性读取数据
+    plydata = PlyData.read(input_path)
+    data = plydata.elements[0].data
+    data_pd = pd.DataFrame(data)
+    print(f"the shape of input ply is: {data_pd.shape}")
+
+    data_np = np.zeros(data_pd.shape, dtype=np.float32)
+    property_names = data[0].dtype.names
+    print(property_names)
+
+    for i, name in enumerate(property_names):
         data_np[:, i] = data_pd[name]
     data_np.astype(np.float32).tofile(output_path)
+    print("saved")
+
+
+"""
+sometimes pointcloud has more attributes than 6 or three
+"""
+
+
+# input: ply
+# output: bin(num, 6) xyz rgb
+def convert2bin_xyzrgb(input_path, output_path):
+    plydata = PlyData.read(input_path)
+    data = plydata.elements[0].data
+    data_pd = pd.DataFrame(data)
+    print(f"the shape of input ply is: {data_pd.shape}")
+
+    data_np = np.zeros(
+        (data_pd.shape[0], 6), dtype=np.float32
+    )  # for pointnet, the format of the data is float32
+    property_names = data[0].dtype.names[:6]  # only x y z and RGB writen to the bin
+    print(property_names)
+
+    for i, name in enumerate(property_names):
+        data_np[:, i] = data_pd[name]
+
+    print(f"the shape of bin is: {data_np.shape}")
+    data_np.astype(np.float32).tofile(output_path)
+    print("saved")
+
+
+# input: ply
+# output: bin(num, 6) xyz rgb Normalized XYZ
+# this is same with the S3DIS dataset
+def convert2bin_xyzrgbNXYZ(input_path, output_path):
+    plydata = PlyData.read(input_path)
+    data = plydata.elements[0].data
+    data_pd = pd.DataFrame(data)
+    print(f"the shape of input ply is: {data_pd.shape}")
+
+    data_np = np.zeros(
+        (data_pd.shape[0], 6), dtype=np.float32
+    )  # for pointnet, the format of the data is float32
+    property_names = data[0].dtype.names[:6]  # only x y z and RGB
+    print(property_names)
+
+    for i, name in enumerate(property_names):
+        data_np[:, i] = data_pd[name]
+
+    # cal normalized xyz
+    xyz = data_np[:, :3]
+
+    min_vals = np.min(xyz, axis=0)
+    max_vals = np.max(xyz, axis=0)
+    normalized_xyz = (xyz - min_vals) / (max_vals - min_vals)
+    data_np = np.hstack((data_np, normalized_xyz))
+
+    print(f"the shape of bin is: {data_np.shape}")
+    data_np.astype(np.float32).tofile(output_path)
+    print("saved")
 
 
 def convert_bin_xyz(inpath, outpath):
@@ -41,8 +103,7 @@ if __name__ == "__main__":
         "./mmde3d/preds/2C05_downsample.bin", "./mmde3d/preds/2C05_downsample.ply"
     )
 """
-    # the shape of bin is: (135216, 6)
-    convert_ply(
+    convert2bin_xyzrgbNXYZ(
         "/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_downsample.ply",
-        "./mmde3d/preds/synth1_downsample.bin",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/synth1_xyz.bin",
     )

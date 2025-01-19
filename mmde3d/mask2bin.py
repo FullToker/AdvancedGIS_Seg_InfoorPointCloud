@@ -4,13 +4,14 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 
 
-def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
-    point_cloud = np.fromfile(binpath, dtype=np.float32).reshape(-1, 6)
+def mask_bin(binpath: str, jsonpath: str, outpath: str, binCols: int):
+    point_cloud = np.fromfile(binpath, dtype=np.float32).reshape(-1, binCols)
     print(f"points in bin: {point_cloud.shape}")
     with open(jsonpath, "r") as f:
         mask = json.load(f)
 
     mask_ls = mask["pts_semantic_mask"]
+    print(f"length of mask is {len(mask_ls)}")
     assert len(mask_ls) == len(
         point_cloud
     ), "the number of points in two files are different."
@@ -34,11 +35,17 @@ def mask_bin_xyz(binpath: str, jsonpath: str, outpath: str):
 
 
 if __name__ == "__main__":
+    """
     bin_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/GE006_downsample_hard.ply"
     json_path = "./mmde3d/ ./preds/"
     ply_path = "./mmde3d/preds/synth1_sg.ply"
+    """
 
-    mask_bin_xyz(bin_path, json_path, ply_path)
+    bin_path = "./mmde3d/preds/synth1_downsample.bin"
+    json_path = "./mmde3d/preds/synth1_downsample.json"
+    ply_path = "./mmde3d/preds/synth1_paconv.ply"
+
+    mask_bin(bin_path, json_path, ply_path, binCols=6)
 
 """
     with open(json_path, "r") as f:

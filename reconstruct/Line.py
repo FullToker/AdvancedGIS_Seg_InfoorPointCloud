@@ -85,17 +85,36 @@ def load_point_clouds(ply_files):
         point_clouds.append(pcd)
     return point_clouds
 
+def create_sphere_marker(center, radius=0.05, color=[1, 0, 0]):
+    """Create a sphere marker to visualize intersection points."""
+    sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius)
+    sphere.translate(center)
+    sphere.paint_uniform_color(color)
+    return sphere
+
+def visualize_results(point_clouds, intersections, wall_models, lines):
+    """Visualize point clouds, intersection points, wall models, and intersection lines."""
+    markers = [create_sphere_marker(pt) for pt in intersections]
+
+    line_set = o3d.geometry.LineSet()
+    line_set.points = o3d.utility.Vector3dVector(lines)
+    line_set.lines = o3d.utility.Vector2iVector([[i, i + 1] for i in range(0, len(lines), 2)])
+    line_set.colors = o3d.utility.Vector3dVector([[1, 0, 0] for _ in range(len(lines) // 2)])
+
+    # Visualize everything together
+    o3d.visualization.draw_geometries(point_clouds + markers + wall_models + [line_set], window_name="3D Wall Reconstruction")
+
 def main(ply_files):
     point_clouds = load_point_clouds(ply_files)
-    
-    # Fit planes to all walls using RANSAC
+
+    # 1. Fit planes to all walls using RANSAC
     planes = []
     for i, pc in enumerate(point_clouds):
         plane_model, inliers = fit_plane_ransac(pc)
         planes.append((plane_model, pc))
         print(f"Wall {i + 1}: Plane model = {plane_model}")
-    
-    # Compute intersection lines and validate them based on wall boundaries
+
+    # 2. Compute intersection lines and validate them based on wall boundaries
     valid_intersection_lines = []
     for (i, (plane1, pc1)), (j, (plane2, pc2)) in combinations(enumerate(planes), 2):
         point, direction = compute_intersection_line(plane1, plane2)
@@ -106,8 +125,8 @@ def main(ply_files):
         if is_line_intersecting_cloud(point, direction, pc1) and is_line_intersecting_cloud(point, direction, pc2):
             valid_intersection_lines.append((point, direction))
             print(f"Valid intersection line between wall {i + 1} and wall {j + 1}")
-    
-    # Extract and reconstruct wall models
+
+    # 3. Extract and reconstruct wall models
     wall_models = []
     for pc in point_clouds:
         # Crop point cloud based on intersection lines
@@ -117,11 +136,11 @@ def main(ply_files):
             if boundary_points is not None:
                 wall_mesh = reconstruct_wall_mesh(boundary_points)
                 wall_models.append(wall_mesh)
-    
+
     if not wall_models:
         print("No wall models were generated. Try adjusting the tolerance or checking the input point clouds.")
-    
-    # Visualize walls and valid intersection lines
+
+    # 4. Visualize everything together (point clouds, intersection points, wall models)
     lines = []
     line_set_points = []
     for point, direction in valid_intersection_lines:
@@ -130,15 +149,9 @@ def main(ply_files):
         line_set_points.append(start_point)
         line_set_points.append(end_point)
         lines.append([len(line_set_points) - 2, len(line_set_points) - 1])
-    
-    line_set = o3d.geometry.LineSet()
-    line_set.points = o3d.utility.Vector3dVector(line_set_points)
-    line_set.lines = o3d.utility.Vector2iVector(lines)
-    line_set.colors = o3d.utility.Vector3dVector([[1, 0, 0] for _ in lines])
-    
-    # Visualize everything together
-    o3d.visualization.draw_geometries(point_clouds + [line_set] + wall_models, window_name="3D Wall Reconstruction")
-    o3d.visualization.draw_geometries([line_set] + wall_models, window_name="wall model")
+
+    # 5. Visualize final results
+    visualize_results(point_clouds, [point for point, _ in valid_intersection_lines], wall_models, line_set_points)
 
 if __name__ == "__main__":
     ply_files = [

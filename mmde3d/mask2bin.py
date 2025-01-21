@@ -22,9 +22,9 @@ def mask_bin(binpath: str, jsonpath: str, outpath: str, binCols: int):
     filtered_points = []
     filtered_colors = []
     for i, label in enumerate(mask_ls):
-        if label in [0, 1, 2]:  # Only keep points with labels 1 and 2.
-            filtered_points.append(point_cloud[i, 0:3])
-            filtered_colors.append(colors[i])
+        # if label in [0, 1, 2]:  # Only keep points with labels 1 and 2.
+        filtered_points.append(point_cloud[i, 0:3])
+        filtered_colors.append(colors[i])
 
     new_pcd = o3d.geometry.PointCloud()
     new_pcd.points = o3d.utility.Vector3dVector(filtered_points)
@@ -35,15 +35,15 @@ def mask_bin(binpath: str, jsonpath: str, outpath: str, binCols: int):
 
 
 if __name__ == "__main__":
-    """
-    bin_path = "/Volumes/T7 Shield/AdvancedGIS/read_test/GE006_downsample_hard.ply"
-    json_path = "./mmde3d/ ./preds/"
-    ply_path = "./mmde3d/preds/synth1_sg.ply"
-    """
+    bin_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin"
+    json_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.json"
+    ply_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_ds_ssg.ply"
 
+    """
     bin_path = "./mmde3d/preds/synth1_downsample.bin"
     json_path = "./mmde3d/preds/synth1_downsample.json"
     ply_path = "./mmde3d/preds/synth1_paconv.ply"
+    """
 
     mask_bin(bin_path, json_path, ply_path, binCols=6)
 

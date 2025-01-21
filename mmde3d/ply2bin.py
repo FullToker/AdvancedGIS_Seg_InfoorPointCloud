@@ -99,11 +99,14 @@ if __name__ == "__main__":
 
     """
     """
-    convert_bin_xyz(
-        "./mmde3d/preds/2C05_downsample.bin", "./mmde3d/preds/2C05_downsample.ply"
-    )
-"""
     convert2bin_xyzrgbNXYZ(
         "/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_downsample.ply",
         "/media/fys/T7 Shield/AdvancedGIS/read_test/synth1_xyz.bin",
+    )
+
+    """
+
+    convert2bin_xyzrgb(
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.ply",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin",
     )

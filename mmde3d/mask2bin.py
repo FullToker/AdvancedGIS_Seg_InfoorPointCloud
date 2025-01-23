@@ -36,15 +36,15 @@ def mask_bin(binpath: str, jsonpath: str, outpath: str, binCols: int):
 
 
 if __name__ == "__main__":
+    """
     bin_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin"
     json_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.json"
     ply_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_ds_paconv_walls.ply"
-
     """
+
     bin_path = "./mmde3d/preds/synth1_downsample.bin"
     json_path = "./mmde3d/preds/synth1_downsample.json"
-    ply_path = "./mmde3d/preds/synth1_paconv.ply"
-    """
+    ply_path = "./mmde3d/preds/synth1_paconv_walls.ply"
 
     mask_bin(bin_path, json_path, ply_path, binCols=6)
 

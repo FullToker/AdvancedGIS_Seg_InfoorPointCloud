@@ -76,9 +76,9 @@ def get_wall(
             # combined_cloud += all_planes[i]
 
             # remove the strip according to the angle
-            # angle = calNorm_z(all_planes[i])
-            # if ((abs(angle) < 1.4 or abs(angle) > 1.6) and len(all_planes[i]) > 2200):
-            if True:
+            angle = calNorm_z(all_planes[i])
+            if abs(angle) > 1.4 and abs(angle) < 1.6:
+                # if True:
                 combined_cloud += all_planes[i]
 
                 # save each wall to a single ply file in wall folder
@@ -104,8 +104,8 @@ if __name__ == "__main__":
 
     """some test for paconv model: synth1"""
     get_wall(
-        plypath="./mmde3d/preds/synth1_paconv.ply",
-        outpath="./mmde3d/preds/synth1_paconv/all_planes.ply",
-        wall_path="./mmde3d/preds/synth1_paconv/all_planes/",
-        sigma=1200,
+        plypath="./mmde3d/preds/synth1_paconv_walls.ply",
+        outpath="./mmde3d/preds/synth1_paconv/all_walls.ply",
+        wall_path="./mmde3d/preds/synth1_paconv/all_walls/",
+        sigma=2000,
     )

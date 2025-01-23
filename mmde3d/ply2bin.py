@@ -48,6 +48,32 @@ def convert2bin_xyzrgb(input_path, output_path):
 
 
 # input: ply
+# output: bin(num, 6) xyz(shift to origin) rgb
+def convert2bin_xyzrgb_shifted(input_path, output_path):
+    plydata = PlyData.read(input_path)
+    data = plydata.elements[0].data
+    data_pd = pd.DataFrame(data)
+    print(f"the shape of input ply is: {data_pd.shape}")
+
+    data_np = np.zeros(
+        (data_pd.shape[0], 6), dtype=np.float32
+    )  # for pointnet, the format of the data is float32
+    property_names = data[0].dtype.names[:6]  # only x y z and RGB writen to the bin
+    print(property_names)
+
+    for i, name in enumerate(property_names):
+        data_np[:, i] = data_pd[name]
+
+    for i in range(3):
+        min_val = data_np[:, i].min()
+        data_np[:, i] -= min_val  # xnew = xold - xmin
+
+    print(f"the shape of bin is: {data_np.shape}")
+    data_np.astype(np.float32).tofile(output_path)
+    print("saved")
+
+
+# input: ply
 # output: bin(num, 6) xyz rgb Normalized XYZ
 # this is same with the S3DIS dataset
 def convert2bin_xyzrgbNXYZ(input_path, output_path):
@@ -106,7 +132,7 @@ if __name__ == "__main__":
 
     """
 
-    convert2bin_xyzrgb(
+    convert2bin_xyzrgb_shifted(
         "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.ply",
         "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin",
     )

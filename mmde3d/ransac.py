@@ -52,13 +52,15 @@ def calNorm_z(point_cloud):
 
 
 def get_wall(
-    plypath,
-    outpath,
-    wall_path=r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/",
+    plypath: str,
+    outpath: str,
+    # wall_path=r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/wall/",
+    wall_path: str,
+    sigma: int,
 ):
     pcd = o3d.io.read_point_cloud(plypath)
 
-    remain_pcd, planes_normal, all_planes = plane_detection(pcd, 1200)
+    remain_pcd, planes_normal, all_planes = plane_detection(pcd, sigma)
     num_planes = len(all_planes)
     # print(np.array(planes).shape)
     combined_cloud = o3d.geometry.PointCloud()
@@ -66,44 +68,44 @@ def get_wall(
 
     num_walls = 0
     for i in range(num_planes):
-        # remove the ceiling and floor, only leave the wall
-        if i == 0 or i == 1:
+
+        """notice: only ceiling and floor, only walls or all big planes"""
+        # if i == 0 or i == 1:
+        if True:
             # if i != 0 and i != 1:
             # combined_cloud += all_planes[i]
 
             # remove the strip according to the angle
-            angle = calNorm_z(all_planes[i])
-            # if abs(angle) > 1.4 and abs(angle) < 1.6:
+            # angle = calNorm_z(all_planes[i])
+            # if ((abs(angle) < 1.4 or abs(angle) > 1.6) and len(all_planes[i]) > 2200):
             if True:
                 combined_cloud += all_planes[i]
 
                 # save each wall to a single ply file in wall folder
-                file = wall_path + f"floor{num_walls}.ply"
+                file = wall_path + f"planes{num_walls}.ply"
                 o3d.io.write_point_cloud(file, all_planes[i])
 
                 num_walls += 1
 
-        """
-        # add the index for each plane ///////////////////--------------------------------------/
-        current_plane = all_planes[i]
-        points = np.asarray(current_plane.points)
-        colors = np.zeros((len(points), 3))
-        colors[:, 0] = (i + 1) / num_planes
-
-        extended_pcd = o3d.geometry.PointCloud()
-        extended_pcd.points = o3d.utility.Vector3dVector(points)
-        extended_pcd.colors = o3d.utility.Vector3dVector(colors)
-        combined_cloud += extended_pcd
-        """
-
     o3d.io.write_point_cloud(outpath, combined_cloud)
     print("done")
-    print(f"Final get {num_walls} walls.")
+    print(f"Final get {num_walls} walls(planes).")
 
 
-# main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")
-get_wall(
-    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_sg_clean.ply",
-    r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_floor_clean_index.ply",
-    # r"./mmde3d/preds/synth1_wall_plane.ply",
-)
+if __name__ == "__main__":
+    # main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")
+    """
+    get_wall(
+        r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_sg_clean.ply",
+        r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_floor_clean_index.ply",
+        # r"./mmde3d/preds/synth1_wall_plane.ply",
+    )
+    """
+
+    """some test for paconv model: synth1"""
+    get_wall(
+        plypath="./mmde3d/preds/synth1_paconv.ply",
+        outpath="./mmde3d/preds/synth1_paconv/all_planes.ply",
+        wall_path="./mmde3d/preds/synth1_paconv/all_planes/",
+        sigma=1200,
+    )

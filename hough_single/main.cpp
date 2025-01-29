@@ -1,7 +1,9 @@
 #include <eigen3/Eigen/Core>
 #include <iostream>
 #include <opencv2/core.hpp>
+#include <opencv2/core/matx.hpp>
 #include <opencv2/core/persistence.hpp>
+#include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -18,7 +20,7 @@
  * Author: Yushuo
  *
  * Date: 27.01.2025
- * PCL + cpp test
+ * PCL + cv + cpp test
  *
  * */
 
@@ -71,7 +73,7 @@ int main() {
 
   /*point to matrix*/
   std::cout << "Start build matrix...";
-  float pix_size = 0.01; // a hypermeter need to set
+  float pix_size = 0.04; // a hypermeter need to set
   float residual = 10;
   int row =
       static_cast<int>((maxpt.y + residual - (minpt.y - residual)) / pix_size);
@@ -100,6 +102,7 @@ int main() {
     image.at<uchar>(y, x) = value;
   }
   cv::imshow("image", image);
+  cv::Mat image_houghp = image.clone();
   // cv::imwrite("../src/image.png", image);
   cv::waitKey(0);
   ///---------------------------------////////////------------------------------------
@@ -142,20 +145,52 @@ int main() {
   std::vector<cv::Vec4i> lines;
   cv::HoughLinesP(image, lines, 1, CV_PI / 180, 50, 50, 10);
 
-for (size_t i = 0; i < lines.size(); i++) {
+  for (size_t i = 0; i < lines.size(); i++) {
     cv::Vec4i l = lines[i];
-    cv::line(image, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(255), 3);
+    cv::line(image, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]),
+             cv::Scalar(255), 3);
     // Draw endpoints
     cv::circle(image, cv::Point(l[0], l[1]), 5, cv::Scalar(255), cv::FILLED);
     cv::circle(image, cv::Point(l[2], l[3]), 5, cv::Scalar(255), cv::FILLED);
-}
+  }
 
-cv::imwrite("../src/hough.png", image);
+  // cv::imwrite("../src/hough.png", image);
 
-// Optionally display the image
-cv::imshow("Detected Lines and Endpoints", image);
-cv::waitKey(0);
-cv::destroyAllWindows();
+  // Optionally display the image
+  cv::imshow("Detected Lines and Endpoints", image);
+  cv::waitKey(0);
+
+  //---------------------------------------------------------------------------------///////////////
+  /* Probability Hough Transform*/
+  double deltaRho = 3, deltaTheta = CV_PI / 180;
+  double minVote = 20;
+  double minLength = 20.0, maxGap = 25;
+  cv::Scalar color = cv::Scalar(255, 0, 0);
+
+  std::vector<cv::Vec4i> lineSegs;
+  lineSegs.clear();
+  cv::HoughLinesP(image_houghp, lineSegs, deltaRho, deltaTheta, minVote,
+                  minLength, maxGap);
+
+  std::vector<cv::Vec4i>::const_iterator it2 = lineSegs.begin();
+  std::cout << "find " << lineSegs.size() << " line segments using HoughP!"
+            << std::endl;
+  while (it2 != lineSegs.end()) {
+    cv::Point pt1((*it2)[0], (*it2)[1]);
+    cv::Point pt2((*it2)[2], (*it2)[3]);
+
+    cv::line(image_houghp, pt1, pt2, color, 1);
+    cv::circle(image_houghp, pt1, 2, cv::Scalar(255), cv::FILLED);
+    cv::circle(image_houghp, pt2, 2, cv::Scalar(255), cv::FILLED);
+
+    ++it2;
+  }
+
+  cv::imwrite("../src/houghLinesP.png", image_houghp);
+  cv::imshow("HoughlineP", image_houghp);
+  cv::waitKey(0);
+
+  cv::destroyAllWindows();
 
   return 0;
 }

@@ -26,6 +26,21 @@
 
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
+//bool to control the window and the save
+const bool is_show true;
+const bool is_save true;
+
+void cvshow(std::string window_name, cv::Mat& image_to_show, bool flag = is_show){
+  if(flag){
+    cv::imshow(window, image_to_show);
+    cv::waitKey(0);
+  }
+}
+void cvsave(std::string save_rpath, cv::Mat& image_to_save, bool flag = is_save){
+  if(falg){
+    cv::imwrite(save_rpath, image_to_save);
+  }
+}
 
 int main() {
   std::cout << "Hello, World!" << std::endl;
@@ -101,10 +116,11 @@ int main() {
                                      (std::max(0.0f, point.z)) * 255);
     image.at<uchar>(y, x) = value;
   }
-  cv::imshow("image", image);
+  
   cv::Mat image_houghp = image.clone();
-  // cv::imwrite("../src/image.png", image);
-  cv::waitKey(0);
+  // cvwrite("../src/image.png", image);
+  cvshow("image", image);
+  
   ///---------------------------------////////////------------------------------------
 
   /*
@@ -157,8 +173,9 @@ int main() {
   // cv::imwrite("../src/hough.png", image);
 
   // Optionally display the image
-  cv::imshow("Detected Lines and Endpoints", image);
-  cv::waitKey(0);
+  //cv::imshow("Detected Lines and Endpoints", image);
+  //cv::waitKey(0);
+  cvshow("Detected Lines and Endpoints", image);
 
   //---------------------------------------------------------------------------------///////////////
   /* Probability Hough Transform*/
@@ -186,9 +203,9 @@ int main() {
     ++it2;
   }
 
-  cv::imwrite("../src/houghLinesP.png", image_houghp);
-  cv::imshow("HoughlineP", image_houghp);
-  cv::waitKey(0);
+  cvsave("../src/houghLinesP.png", image_houghp);
+  cvshow("Detected Lines and Endpoints", image_houghp);
+  
 
   cv::destroyAllWindows();
 

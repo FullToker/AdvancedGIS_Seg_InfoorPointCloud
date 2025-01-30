@@ -13,6 +13,7 @@
 #include <opencv2/opencv.hpp>
 #include <ostream>
 #include <pcl/common/common.h>
+#include <pcl/impl/point_types.hpp>
 #include <pcl/io/ply_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -39,6 +40,13 @@ struct MID_PT {
   // on the image system
   int col;
   int row;
+};
+
+// point struct for rebuild the 3D model
+struct END_PT {
+  double x;
+  double y;
+  double z;
 };
 
 // bool to control the window and the save
@@ -402,9 +410,10 @@ void region_extraction(std::string filename) {
 
 /*
  * flood fill to get the whole room structure
- *
+ * filename: input path of pcd file
+ * footprint: vector to store all end points in this single room
  * */
-void flood_fill(std::string filename) {
+void flood_fill(std::string filename, std::vector<END_PT> &footprint) {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
   if (pcl::io::loadPLYFile<pcl::PointXYZ>(filename, *cloud) == -1) {
@@ -642,6 +651,7 @@ void flood_fill(std::string filename) {
    */
   std::cout << "Extrat Successfully! Begin to build model ... " << std::endl;
   std::vector<MID_PT> endPTs;
+  footprint.clear();
   // redefinition of iterator of the final_poly
   itf = final_poly.begin();
   while (itf != final_poly.end()) {
@@ -662,6 +672,11 @@ void flood_fill(std::string filename) {
     std::cout << "col: " << (*itf).x << "; back to pcd x: " << original_x
               << std::endl;
 
+    END_PT ept;
+    ept.x = original_x;
+    ept.y = original_y;
+    footprint.push_back(ept);
+
     ++itf;
   }
 
@@ -674,7 +689,7 @@ void flood_fill(std::string filename) {
  * see them as the plane parallel to the xy
  * estimate the mean height(z value)
  * */
-void extract_C_F_simple(std::string filename) {
+void extract_C_F_simple(std::string filename, double &output_height) {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
   if (pcl::io::loadPLYFile<pcl::PointXYZ>(filename, *cloud) == -1) {
@@ -739,7 +754,91 @@ void extract_C_F_simple(std::string filename) {
   double avg_z = sum_z / cloud->points.size();
 
   std::cout << "Average Z Value is: " << avg_z << std::endl;
+  output_height = avg_z;
 }
+
+/*
+ * input the one room structure and information from ceiling and floor
+ *  rebuild the model -> single room representation: Surface boundary
+ *  number of walls + 2 : ceiling and floor
+ */
+void single_model_build(std::string wall_path, std::string ceiling_path,
+                        std::string floor_path,
+                        std::vector<std::vector<END_PT>> wall_rep,
+                        std::vector<std::vector<END_PT>> uplow_rep) {
+  std::vector<END_PT> layout;
+  flood_fill(wall_path, layout);
+  std::cout << "find " << layout.size() << " walls in this file.." << std::endl;
+
+  double c_height, f_height;
+  extract_C_F_simple(ceiling_path, c_height);
+  extract_C_F_simple(floor_path, f_height);
+  std::cout << "ceiling z is " << c_height << std::endl;
+  std::cout << "floor z is " << f_height << std::endl;
+  // static_assert(c_height > f_height, "Ceiling must be higher than the
+  // floor!");
+
+  // start to build the model
+  std::cout << std::endl << "Start to build the boundary.." << std::endl;
+  std::vector<END_PT>::iterator itl = layout.begin();
+  while (itl != layout.end() - 1) {
+    // this contains four corners of a single wall
+    std::vector<END_PT> corner_wall;
+    END_PT corner;
+    corner.x = (*itl).x;
+    corner.y = (*itl).y;
+    corner.z = f_height;
+    corner_wall.push_back(corner);
+
+    corner.x = (*(itl + 1)).x;
+    corner.y = (*(itl + 1)).y;
+    corner.z = f_height;
+    corner_wall.push_back(corner);
+    corner.x = (*(itl + 1)).x;
+    corner.y = (*(itl + 1)).y;
+    corner.z = c_height;
+    corner_wall.push_back(corner);
+    corner.x = (*itl).x;
+    corner.y = (*itl).y;
+    corner.z = c_height;
+    corner_wall.push_back(corner);
+
+    wall_rep.push_back(corner_wall);
+    ++itl;
+  }
+  itl = layout.end();
+  std::vector<END_PT> corner_wall;
+  END_PT corner;
+  corner.x = (*itl).x;
+  corner.y = (*itl).y;
+  corner.z = f_height;
+  corner_wall.push_back(corner);
+
+  corner.x = (*(layout.begin())).x;
+  corner.y = (*(layout.begin())).y;
+  corner.z = f_height;
+  corner_wall.push_back(corner);
+  corner.x = (*(layout.begin())).x;
+  corner.y = (*(layout.begin())).y;
+  corner.z = c_height;
+  corner_wall.push_back(corner);
+  corner.x = (*itl).x;
+  corner.y = (*itl).y;
+  corner.z = c_height;
+  corner_wall.push_back(corner);
+
+  wall_rep.push_back(corner_wall);
+
+  if (wall_rep.size() != layout.size()) {
+    std::cout << "Wrong number of walls rep!" << std::endl;
+    return;
+  }
+
+  // ceiling and floor rep
+  
+}
+
+/*deal with the whole folder to get the whole structure*/
 
 int main() {
   std::cout << "Hello, PCL + OpenCV!" << std::endl;
@@ -753,8 +852,8 @@ int main() {
 
   std::string name =
       "/media/fys/T7 "
-      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
-  extract_C_F_simple(name);
+      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
+  // extract_C_F_simple(name);
 
   return 0;
 }

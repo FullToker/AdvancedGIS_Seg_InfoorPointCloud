@@ -1,4 +1,4 @@
-CMakeFiles/hough.dir/main.cpp.o: \
+CMakeFiles/model.dir/main.cpp.o: \
  /home/fys/Program/AdvancedGIS_SegmPC/hough_single/main.cpp \
  /usr/include/stdc-predef.h /usr/include/eigen3/Eigen/Core \
  /usr/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \

@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/fys/Program/AdvancedGIS_SegmPC/hough_single/main.cpp" "CMakeFiles/hough.dir/main.cpp.o" "gcc" "CMakeFiles/hough.dir/main.cpp.o.d"
+  "/home/fys/Program/AdvancedGIS_SegmPC/hough_single/main.cpp" "CMakeFiles/model.dir/main.cpp.o" "gcc" "CMakeFiles/model.dir/main.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

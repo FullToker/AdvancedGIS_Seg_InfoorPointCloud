@@ -29,7 +29,7 @@
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
 // bool to control the window and the save
-const bool is_show = true;
+const bool is_show = false;
 const bool is_save = false;
 
 void cvshow(std::string window_name, cv::Mat &image_to_show,
@@ -387,13 +387,248 @@ void region_extraction(std::string filename) {
   cvshow("watershed", water_result);
 }
 
+void flood_fill(std::string filename) {
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+
+  if (pcl::io::loadPLYFile<pcl::PointXYZ>(filename, *cloud) == -1) {
+    PCL_ERROR("Couldn't read file\n");
+    return;
+  }
+
+  std::cout << "Loaded " << cloud->points.size() << " points from " << filename
+            << std::endl;
+
+  //----------------------------------------------------------------------------////////
+  /*visualization of the point cloud using PCL */
+  pcl::visualization::PCLVisualizer viewer("Point Cloud Viewer");
+  viewer.setBackgroundColor(0, 0, 0);
+
+  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
+      cloud_color_handler(cloud, 255, 255, 255); // White color
+  viewer.addPointCloud(cloud, cloud_color_handler, "cloud");
+  viewer.setPointCloudRenderingProperties(
+      pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");
+  viewer.addCoordinateSystem(1.0);
+  viewer.spinOnce(100);
+
+  //---------------------------------------------------------------/------------------------/----/
+  /* project the pcd to 2d plane*/
+  std::cout << "Start to project to 2D..." << std::endl;
+
+  PointT minpt, maxpt;
+  pcl::getMinMax3D(*cloud, minpt, maxpt);
+  std::cout << "the xmin is " << minpt.x << " and the ymin is " << minpt.y
+            << std::endl;
+  std::cout << "the xmax is " << maxpt.x << " and the ymax is " << maxpt.y
+            << std::endl;
+
+  /*point to matrix*/
+  std::cout << "Start build matrix...";
+  float pix_size = 0.04; // a hypermeter need to set
+  float residual = 10;
+  int row =
+      static_cast<int>((maxpt.y + residual - (minpt.y - residual)) / pix_size);
+  int col =
+      static_cast<int>((maxpt.x + residual - (minpt.x - residual)) / pix_size);
+  std::cout << "row is " << row << " and the col is " << col << std::endl;
+  /*visualization the image(binary)*/
+  cv::Mat image = cv::Mat::zeros(row, col, CV_8UC1);
+  for (const auto &point : cloud->points) {
+    /*
+    int x = static_cast<int>(((point.x - minpt.x) / (maxpt.x - minpt.x)) *
+                             (col - 1));
+    int y = static_cast<int>(((point.y - minpt.y) / (maxpt.y - minpt.y)) *
+                             (row - 1));
+  */
+
+    int x = static_cast<int>(
+        ((point.x - minpt.x + residual) / (maxpt.x - minpt.x + 2 * residual)) *
+        (col - 1));
+    int y = static_cast<int>((row - 1) - ((point.y - minpt.y + residual) /
+                                          (maxpt.y - minpt.y + 2 * residual)) *
+                                             (row - 1));
+    uchar value = static_cast<uchar>((point.z - std::min(0.0f, point.z)) /
+                                     (std::max(0.0f, point.z)) * 255);
+    image.at<uchar>(y, x) = value;
+  }
+
+  cvshow("2D projection binary", image);
+
+  /////////-------------------------------------------------------------------///////////////--------------------------------//
+  // find the seed point
+  int residual_pix = residual / pix_size;
+
+  std::vector<cv::Point> corners = {
+      cv::Point(0 + residual_pix, 0 + residual_pix),
+      cv::Point(image.cols - 1 - residual_pix, 0 + residual_pix),
+      cv::Point(0 + residual_pix, image.rows - 1 - residual_pix),
+      cv::Point(image.cols - 1 - residual_pix, image.rows - 1 - residual_pix)};
+
+  std::vector<cv::Point> directions = {cv::Point(1, 1), cv::Point(-1, 1),
+                                       cv::Point(1, -1), cv::Point(-1, -1)};
+
+  cv::Mat result = image.clone();
+  cv::cvtColor(result, result, cv::COLOR_GRAY2BGR);
+
+  cv::Point seed_pt;
+  for (int i = 0; i < 4; i++) {
+    cv::Point corner = corners[i];
+    cv::Point dir = directions[i];
+    int count = 0;
+    cv::Point current = corner;
+
+    while (current.x >= 0 && current.x < image.cols && current.y >= 0 &&
+           current.y < image.rows) {
+      if (image.at<uchar>(current.y, current.x) == 255) {
+        count++;
+      }
+      current.x += dir.x;
+      current.y += dir.y;
+    }
+    if (count % 2 == 1) {
+      seed_pt = corner + 2 * dir;
+      if (seed_pt.x >= 0 && seed_pt.x < image.cols && seed_pt.y >= 0 &&
+          seed_pt.y < image.rows) {
+        result.at<cv::Vec3b>(seed_pt.y, seed_pt.x) = cv::Vec3b(0, 0, 255);
+      }
+      break;
+    }
+  }
+  cvshow("seed", result);
+
+  //-------------------------------------------------------------//////////////----------------//
+  // do closed operation
+  cv::Mat closed_img;
+  int morph_size = 1;
+  cv::Mat element = cv::getStructuringElement(
+      cv::MORPH_RECT, cv::Size(2 * morph_size + 1, 2 * morph_size + 1),
+      cv::Point(morph_size, morph_size));
+  cv::morphologyEx(image, closed_img, cv::MORPH_CLOSE, element);
+  cvshow("closed", closed_img);
+
+  //--------------------------------------------------------------------------///////////////////////////////------------------------------////
+  std::cout << "find contours..." << std::endl;
+  std::vector<std::vector<cv::Point>> contours;
+  cv::findContours(closed_img, contours, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_NONE);
+  std::cout << "find " << contours.size() << " contours in this image"
+            << std::endl;
+
+  cv::Mat contour_result(image.size(), CV_8U, cv::Scalar(255));
+  /* -1: all contours, 150: color; 1: width of the line*/
+  cv::drawContours(contour_result, contours, -1, 150, 1);
+  cvshow("contours result", contour_result);
+
+  /*	Approximates a polygonal curve(s) with the specified precision */
+  std::vector<cv::Point> poly;
+  cv::approxPolyDP(contours[0], poly, 5, true);
+  // cv::polylines(contour_result, poly, true, 0, 1);
+
+  cvshow("contours result", contour_result, false);
+
+  /*
+  // iterate all points in poly
+  std::cout << "there are " << poly.size() << " points in poly" << std::endl;
+  std::vector<cv::Point>::iterator itc = poly.begin();
+  while (itc != poly.end()) {
+    std::cout << "x: " << (*itc).x << "; y: " << (*itc).y << std::endl;
+    ++itc;
+  }
+  */
+
+  //-------------------------------------------------------------------////////////////////////
+  /* draw the convex hull*/
+  std::vector<cv::Point> hull;
+  cv::convexHull(contours[0], hull);
+  std::cout << "size of the hull is: " << hull.size() << std::endl;
+  cv::polylines(contour_result, hull, true, 166, 1);
+  cvshow("convex hull", contour_result, false);
+
+  ///-------------------------------------------------------------------------------//--------------------------------//
+  /* watershed*/
+
+  // draw the convexl hull on the closed image as the original image of the
+  // watershed algorithm
+
+  cv::polylines(closed_img, hull, true, 255, 1);
+  // cv::circle(closed_img, seed_pt, 2, cv::Scalar(155), cv::FILLED);
+  cvshow("closed image with the convex hull", closed_img);
+
+  //--------------------------------------------------------//-----------------------
+  /* flood fill*/
+
+  closed_img.at<uchar>(seed_pt) = 0;
+
+  int newVal = 128;
+  cv::Mat mask;
+  mask.create(closed_img.rows + 2, closed_img.cols + 2, CV_8UC1);
+  mask = cv::Scalar::all(0);
+
+  int loDiff = 0, upDiff = 0;
+  int flags =
+      4 | (newVal << 8) | cv::FLOODFILL_MASK_ONLY | cv::FLOODFILL_FIXED_RANGE;
+  /*The first 8 bits contain a connectivity value.
+   * The next 8 bits (8-16) contain a value between 1 and 255 with which to fill
+   * the mask. The following additional options occupy higher bits and therefore
+   * may be further combined with the connectivity and mask fill values using
+   * bit-wise or (|)*/
+  cv::floodFill(closed_img, mask, seed_pt, cv::Scalar(255), 0,
+                cv::Scalar(loDiff), cv::Scalar(upDiff), flags);
+
+  // cv::imshow("Filled Image", closed_img);
+
+  //--------------------------------------------------------------------------------//----------------
+  /* mask to contour of the room
+   * find contours -> approx poly DP*/
+  cv::Mat bin_mask;
+  cv::threshold(mask, bin_mask, 108, 255, cv::THRESH_BINARY);
+  cvshow("bin mask", bin_mask);
+
+  std::vector<std::vector<cv::Point>> final_contours;
+  std::vector<cv::Vec4i> hierarchy;
+  cv::findContours(bin_mask, final_contours, hierarchy, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_NONE);
+  std::cout << "find " << final_contours.size() << " in the mask." << std::endl;
+
+  cv::Mat contourImg = cv::Mat::zeros(bin_mask.size(), CV_8UC3);
+  for (int i = 0; i < final_contours.size(); i++) {
+    cv::Scalar color = cv::Scalar(0, 255, 0);
+    cv::drawContours(contourImg, final_contours, i, color, 1, cv::LINE_8,
+                     hierarchy, 0);
+  }
+  cvshow("final contours", contourImg);
+
+  //--------------------------------------------------//
+  // approx poly
+  std::vector<cv::Point> final_poly;
+  cv::approxPolyDP(final_contours[0], final_poly, 2,
+                   true); // true refers to close
+  // output all end points
+  std::cout << "there are " << final_poly.size() << " points in final_poly"
+            << std::endl;
+  std::vector<cv::Point>::iterator itf = final_poly.begin();
+  while (itf != final_poly.end()) {
+    std::cout << "x: " << (*itf).x << "; y: " << (*itf).y << std::endl;
+    ++itf;
+  }
+
+  cv::Mat polyImg(mask.size(), CV_8U, 255);
+  cv::polylines(polyImg, final_poly, true, 0, 2);
+  cvshow("Final polygon", polyImg, true);
+
+
+  //---------------------------------------------------------//--------------------------------//------------------------------------//
+  cv::destroyAllWindows();
+}
+
 int main() {
   std::cout << "Hello, World!" << std::endl;
 
   std::string filename = "/media/fys/T7 "
                          "Shield/AdvancedGIS/rebuild/hdbscan_synth1/"
-                         "label21.ply"; // path as a hypermeter
-  region_extraction(filename);
+                         "label27.ply"; // path as a hypermeter
+  // region_extraction(filename);
+  flood_fill(filename);
 
   return 0;
 }

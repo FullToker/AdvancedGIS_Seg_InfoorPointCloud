@@ -337,7 +337,7 @@ void region_extraction(std::string filename) {
   cv::convexHull(contours[0], hull);
   std::cout << "size of the hull is: " << hull.size() << std::endl;
   cv::polylines(contour_result, hull, true, 166, 1);
-  cvshow("convex hull", contour_result);
+  cvshow("convex hull", contour_result, false);
 
   /*
   // detect the defects
@@ -349,21 +349,29 @@ void region_extraction(std::string filename) {
 
   ///-------------------------------------------------------------------------------//--------------------------------//
   /* watershed*/
-  cv::Mat markers = cv::Mat::zeros(contour_result.size(), CV_32SC1);
 
-  markers.at<int>(seed_pt.x, seed_pt.y) = 1;
+  // draw the convexl hull on the closed image as the original image of the
+  // watershed algorithm
 
-  for (int i = 0; i < contour_result.rows; i++) {
-    for (int j = 0; j < contour_result.cols; j++) {
-      if (contour_result.at<uchar>(i, j) < 100) {
+  cv::polylines(closed_img, hull, true, 255, 1);
+  cv::circle(closed_img, seed_pt, 2, cv::Scalar(155), cv::FILLED);
+  cvshow("closed image with the convex hull", closed_img);
+
+  cv::Mat markers = cv::Mat::zeros(closed_img.size(), CV_32SC1);
+
+  markers.at<int>(seed_pt.y, seed_pt.x) = 1;
+
+  for (int i = 0; i < closed_img.rows; i++) {
+    for (int j = 0; j < closed_img.cols; j++) {
+      if (closed_img.at<uchar>(i, j) == 255) {
         markers.at<int>(i, j) = 2;
       }
     }
   }
 
-  cv::watershed(cv::Mat::ones(contour_result.size(), CV_8UC3), markers);
+  cv::watershed(cv::Mat::ones(closed_img.size(), CV_8UC3), markers);
 
-  cv::Mat water_result(contour_result.size(), CV_8UC3);
+  cv::Mat water_result(closed_img.size(), CV_8UC3);
   for (int i = 0; i < markers.rows; i++) {
     for (int j = 0; j < markers.cols; j++) {
       int index = markers.at<int>(i, j);

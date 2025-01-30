@@ -4,6 +4,7 @@
 #include <opencv2/core/matx.hpp>
 #include <opencv2/core/persistence.hpp>
 #include <opencv2/core/types.hpp>
+#include <opencv2/features2d.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -48,10 +49,9 @@ void cvsave(std::string save_rpath, cv::Mat &image_to_save,
 void read_project_binaryImage(std::string filename) {}
 
 /*hough transform aiming to detect lines*/
-void hough_test() {
+void hough_test(std::string filename) {
   /* read the ply file from local*/
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-  std::string filename = "../hdbscan/label11.ply"; // path as a hypermeter
 
   if (pcl::io::loadPLYFile<pcl::PointXYZ>(filename, *cloud) == -1) {
     PCL_ERROR("Couldn't read file\n");
@@ -179,6 +179,7 @@ void hough_test() {
   cv::destroyAllWindows();
 }
 
+/* region extraction using opencv*/
 void region_extraction(std::string filename) {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
@@ -249,12 +250,54 @@ void region_extraction(std::string filename) {
 
   cvshow("2D projection binary", image);
 
+  /////////-------------------------------------------------------------------///////////////--------------------------------//
+  // find the seed point
+  int residual_pix = residual / pix_size;
+
+  std::vector<cv::Point> corners = {
+      cv::Point(0 + residual_pix, 0 + residual_pix),
+      cv::Point(image.cols - 1 - residual_pix, 0 + residual_pix),
+      cv::Point(0 + residual_pix, image.rows - 1 - residual_pix),
+      cv::Point(image.cols - 1 - residual_pix, image.rows - 1 - residual_pix)};
+
+  std::vector<cv::Point> directions = {cv::Point(1, 1), cv::Point(-1, 1),
+                                       cv::Point(1, -1), cv::Point(-1, -1)};
+
+  cv::Mat result = image.clone();
+  cv::cvtColor(result, result, cv::COLOR_GRAY2BGR);
+
+  cv::Point seed_pt;
+  for (int i = 0; i < 4; i++) {
+    cv::Point corner = corners[i];
+    cv::Point dir = directions[i];
+    int count = 0;
+    cv::Point current = corner;
+
+    while (current.x >= 0 && current.x < image.cols && current.y >= 0 &&
+           current.y < image.rows) {
+      if (image.at<uchar>(current.y, current.x) == 255) {
+        count++;
+      }
+      current.x += dir.x;
+      current.y += dir.y;
+    }
+    if (count % 2 == 1) {
+      seed_pt = corner + 2 * dir;
+      if (seed_pt.x >= 0 && seed_pt.x < image.cols && seed_pt.y >= 0 &&
+          seed_pt.y < image.rows) {
+        result.at<cv::Vec3b>(seed_pt.y, seed_pt.x) = cv::Vec3b(0, 0, 255);
+      }
+      break;
+    }
+  }
+  cvshow("seed", result);
+
   ///------------------------------------------------------------------------------------------/////////
   /* use find contours to find the contour of the 2d projection */
 
   // do closed operation
   cv::Mat closed_img;
-  int morph_size = 3;
+  int morph_size = 1;
   cv::Mat element = cv::getStructuringElement(
       cv::MORPH_RECT, cv::Size(2 * morph_size + 1, 2 * morph_size + 1),
       cv::Point(morph_size, morph_size));
@@ -276,9 +319,9 @@ void region_extraction(std::string filename) {
   /*	Approximates a polygonal curve(s) with the specified precision */
   std::vector<cv::Point> poly;
   cv::approxPolyDP(contours[0], poly, 5, true);
-  cv::polylines(contour_result, poly, true, 0, 1);
+  // cv::polylines(contour_result, poly, true, 0, 1);
 
-  cvshow("contours result", contour_result);
+  cvshow("contours result", contour_result, false);
 
   // iterate all points in poly
   std::cout << "there are " << poly.size() << " points in poly" << std::endl;
@@ -287,12 +330,61 @@ void region_extraction(std::string filename) {
     std::cout << "x: " << (*itc).x << "; y: " << (*itc).y << std::endl;
     ++itc;
   }
+
+  //-------------------------------------------------------------------////////////////////////
+  /* draw the convex hull*/
+  std::vector<cv::Point> hull;
+  cv::convexHull(contours[0], hull);
+  std::cout << "size of the hull is: " << hull.size() << std::endl;
+  cv::polylines(contour_result, hull, true, 166, 1);
+  cvshow("convex hull", contour_result);
+
+  /*
+  // detect the defects
+  std::vector<cv::Vec4i> defects;
+  cv::convexityDefects(contours[0], hull, defects);
+  std::cout << "size of defects: " << defects.size() << std::endl;
+  std::cout << "first element : " << defects[0] << std::endl;
+  */
+
+  ///-------------------------------------------------------------------------------//--------------------------------//
+  /* watershed*/
+  cv::Mat markers = cv::Mat::zeros(contour_result.size(), CV_32SC1);
+
+  markers.at<int>(seed_pt.x, seed_pt.y) = 1;
+
+  for (int i = 0; i < contour_result.rows; i++) {
+    for (int j = 0; j < contour_result.cols; j++) {
+      if (contour_result.at<uchar>(i, j) < 100) {
+        markers.at<int>(i, j) = 2;
+      }
+    }
+  }
+
+  cv::watershed(cv::Mat::ones(contour_result.size(), CV_8UC3), markers);
+
+  cv::Mat water_result(contour_result.size(), CV_8UC3);
+  for (int i = 0; i < markers.rows; i++) {
+    for (int j = 0; j < markers.cols; j++) {
+      int index = markers.at<int>(i, j);
+      if (index == -1) {
+        water_result.at<cv::Vec3b>(i, j) = cv::Vec3b(255, 0, 0);
+      } else if (index == 1) {
+        water_result.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 255, 0);
+      } else if (index == 2) {
+        water_result.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 0, 255); // 前景为蓝色
+      }
+    }
+  }
+  cvshow("watershed", water_result);
 }
 
 int main() {
   std::cout << "Hello, World!" << std::endl;
 
-  std::string filename = "../hdbscan/label11.ply"; // path as a hypermeter
+  std::string filename = "/media/fys/T7 "
+                         "Shield/AdvancedGIS/rebuild/hdbscan_synth1/"
+                         "label21.ply"; // path as a hypermeter
   region_extraction(filename);
 
   return 0;

@@ -65,6 +65,7 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/boost/core/addressof.hpp \
   /usr/include/boost/core/alloc_construct.hpp \
   /usr/include/boost/core/allocator_access.hpp \
+  /usr/include/boost/core/bit.hpp \
   /usr/include/boost/core/checked_delete.hpp \
   /usr/include/boost/core/cmath.hpp \
   /usr/include/boost/core/default_allocator.hpp \
@@ -110,6 +111,9 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/boost/get_pointer.hpp \
   /usr/include/boost/integer.hpp \
   /usr/include/boost/integer/common_factor_ct.hpp \
+  /usr/include/boost/integer/integer_log2.hpp \
+  /usr/include/boost/integer/integer_mask.hpp \
+  /usr/include/boost/integer/static_log2.hpp \
   /usr/include/boost/integer_fwd.hpp \
   /usr/include/boost/integer_traits.hpp \
   /usr/include/boost/is_placeholder.hpp \
@@ -592,6 +596,27 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/boost/preprocessor/variadic/limits/elem_64.hpp \
   /usr/include/boost/preprocessor/variadic/limits/size_64.hpp \
   /usr/include/boost/preprocessor/variadic/size.hpp \
+  /usr/include/boost/random/detail/config.hpp \
+  /usr/include/boost/random/detail/const_mod.hpp \
+  /usr/include/boost/random/detail/disable_warnings.hpp \
+  /usr/include/boost/random/detail/enable_warnings.hpp \
+  /usr/include/boost/random/detail/generator_bits.hpp \
+  /usr/include/boost/random/detail/generator_seed_seq.hpp \
+  /usr/include/boost/random/detail/integer_log2.hpp \
+  /usr/include/boost/random/detail/large_arithmetic.hpp \
+  /usr/include/boost/random/detail/operators.hpp \
+  /usr/include/boost/random/detail/polynomial.hpp \
+  /usr/include/boost/random/detail/ptr_helper.hpp \
+  /usr/include/boost/random/detail/seed.hpp \
+  /usr/include/boost/random/detail/seed_impl.hpp \
+  /usr/include/boost/random/detail/signed_unsigned_tools.hpp \
+  /usr/include/boost/random/detail/uniform_int_float.hpp \
+  /usr/include/boost/random/mersenne_twister.hpp \
+  /usr/include/boost/random/traits.hpp \
+  /usr/include/boost/random/uniform_01.hpp \
+  /usr/include/boost/random/uniform_int.hpp \
+  /usr/include/boost/random/uniform_int_distribution.hpp \
+  /usr/include/boost/random/variate_generator.hpp \
   /usr/include/boost/range/algorithm/equal.hpp \
   /usr/include/boost/range/as_literal.hpp \
   /usr/include/boost/range/begin.hpp \
@@ -887,6 +912,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/c++/13/bits/predefined_ops.h \
   /usr/include/c++/13/bits/ptr_traits.h \
   /usr/include/c++/13/bits/quoted_string.h \
+  /usr/include/c++/13/bits/random.h \
+  /usr/include/c++/13/bits/random.tcc \
   /usr/include/c++/13/bits/range_access.h \
   /usr/include/c++/13/bits/ranges_algo.h \
   /usr/include/c++/13/bits/ranges_algobase.h \
@@ -1002,6 +1029,7 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/c++/13/pstl/glue_numeric_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
   /usr/include/c++/13/queue \
+  /usr/include/c++/13/random \
   /usr/include/c++/13/ratio \
   /usr/include/c++/13/set \
   /usr/include/c++/13/source_location \
@@ -1360,6 +1388,12 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/pcl-1.14/pcl/point_struct_traits.h \
   /usr/include/pcl-1.14/pcl/point_types.h \
   /usr/include/pcl-1.14/pcl/register_point_struct.h \
+  /usr/include/pcl-1.14/pcl/sample_consensus/method_types.h \
+  /usr/include/pcl-1.14/pcl/sample_consensus/model_types.h \
+  /usr/include/pcl-1.14/pcl/sample_consensus/sac.h \
+  /usr/include/pcl-1.14/pcl/sample_consensus/sac_model.h \
+  /usr/include/pcl-1.14/pcl/search/search.h \
+  /usr/include/pcl-1.14/pcl/segmentation/sac_segmentation.h \
   /usr/include/pcl-1.14/pcl/type_traits.h \
   /usr/include/pcl-1.14/pcl/types.h \
   /usr/include/pcl-1.14/pcl/visualization/area_picking_event.h \
@@ -1641,6 +1675,7 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
   /usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h \
+  /usr/include/x86_64-linux-gnu/c++/13/bits/opt_random.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
@@ -1769,8 +1804,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
@@ -1809,8 +1842,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/vtk-9.1/vtkWin32Header.h:
 
-/usr/include/vtk-9.1/vtkVolume.h:
-
 /usr/include/vtk-9.1/vtkViewport.h:
 
 /usr/include/vtk-9.1/vtkVectorText.h:
@@ -1848,6 +1879,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/vtk-9.1/vtkRenderer.h:
 
 /usr/include/vtk-9.1/vtkRenderWindowInteractor.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/opt_random.h:
 
 /usr/include/vtk-9.1/vtkProperty2D.h:
 
@@ -2010,6 +2043,10 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/vtk-9.1/vtkDataArray.h:
 
 /usr/include/pcl-1.14/pcl/type_traits.h:
+
+/usr/include/vtk-9.1/vtkVolume.h:
+
+/usr/include/pcl-1.14/pcl/segmentation/sac_segmentation.h:
 
 /usr/include/pcl-1.14/pcl/register_point_struct.h:
 
@@ -2399,11 +2436,45 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/eigen3/Eigen/src/Core/TriangularMatrix.h:
 
-/usr/include/boost/preprocessor/list/reverse.hpp:
+/usr/include/eigen3/Eigen/src/Core/Swap.h:
 
-/usr/include/boost/preprocessor/list/limits/fold_left_256.hpp:
+/usr/include/eigen3/Eigen/src/Core/Stride.h:
 
-/usr/include/boost/mpl/tag.hpp:
+/usr/include/eigen3/Eigen/src/Core/StlIterators.h:
+
+/usr/include/eigen3/Eigen/src/Core/StableNorm.h:
+
+/usr/include/eigen3/Eigen/src/Core/SolveTriangular.h:
+
+/usr/include/eigen3/Eigen/src/Core/Solve.h:
+
+/usr/include/eigen3/Eigen/src/Core/Reverse.h:
+
+/usr/include/eigen3/Eigen/src/Core/ReturnByValue.h:
+
+/usr/include/eigen3/Eigen/src/Core/Reshaped.h:
+
+/usr/include/eigen3/Eigen/src/Core/Ref.h:
+
+/usr/include/eigen3/Eigen/src/Core/Redux.h:
+
+/usr/include/eigen3/Eigen/src/Core/Random.h:
+
+/usr/include/pcl-1.14/pcl/search/search.h:
+
+/usr/include/eigen3/Eigen/src/Core/ProductEvaluators.h:
+
+/usr/include/opencv4/opencv2/stitching/detail/seam_finders.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/PermutationMatrix.h:
+
+/usr/include/eigen3/Eigen/src/Core/NumTraits.h:
+
+/usr/include/eigen3/Eigen/src/Core/NoAlias.h:
+
+/usr/include/eigen3/Eigen/src/Core/MatrixBase.h:
+
+/usr/include/pcl-1.14/pcl/sample_consensus/sac_model.h:
 
 /usr/include/boost/preprocessor/list/fold_right.hpp:
 
@@ -2425,11 +2496,13 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/current_function.hpp:
 
-/usr/include/eigen3/Eigen/src/Core/Solve.h:
-
 /usr/include/vtk-9.1/vtkTimeStamp.h:
 
 /usr/include/boost/preprocessor/enum.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/Replicate.h:
+
+/usr/include/boost/preprocessor/detail/auto_rec.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
@@ -2447,6 +2520,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/preprocessor/control/if.hpp:
 
+/usr/include/pcl-1.14/pcl/sample_consensus/model_types.h:
+
 /usr/include/boost/preprocessor/control/detail/limits/while_256.hpp:
 
 /usr/include/boost/mpl/aux_/numeric_op.hpp:
@@ -2460,6 +2535,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/list/aux_/pop_front.hpp:
 
 /usr/include/boost/preprocessor/comma_if.hpp:
+
+/usr/include/boost/integer/static_log2.hpp:
 
 /usr/include/boost/mpl/aux_/arg_typedef.hpp:
 
@@ -2519,8 +2596,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/reverse_fold_impl.hpp:
 
-/usr/include/boost/preprocessor/variadic/limits/elem_64.hpp:
-
 /usr/include/boost/smart_ptr/detail/local_counted_base.hpp:
 
 /usr/include/boost/numeric/conversion/int_float_mixture_enum.hpp:
@@ -2554,6 +2629,10 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/opencv4/opencv2/highgui/highgui.hpp:
 
 /usr/include/boost/preprocessor/list/adt.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/Transpose.h:
+
+/usr/include/boost/next_prior.hpp:
 
 /usr/include/opencv4/opencv2/flann.hpp:
 
@@ -2635,10 +2714,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/pop_front_fwd.hpp:
 
-/usr/include/boost/mpl/pop_back_fwd.hpp:
-
-/usr/include/boost/mpl/aux_/preprocessor/def_params_tail.hpp:
-
 /usr/include/boost/mpl/plus.hpp:
 
 /usr/include/c++/13/ext/aligned_buffer.h:
@@ -2673,18 +2748,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/vector/vector0.hpp:
 
-/usr/include/vtk-9.1/vtkLegacy.h:
-
-/usr/include/eigen3/Eigen/src/Core/products/Parallelizer.h:
-
-/usr/include/boost/preprocessor/logical/and.hpp:
-
-/usr/include/c++/13/bits/iterator_concepts.h:
-
-/usr/include/opencv4/opencv2/flann/kdtree_single_index.h:
-
-/usr/include/eigen3/Eigen/src/Core/CoreIterators.h:
-
 /usr/include/inttypes.h:
 
 /usr/include/boost/mpl/max_element.hpp:
@@ -2702,6 +2765,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/list/aux_/push_front.hpp:
 
 /usr/include/boost/variant/detail/move.hpp:
+
+/usr/include/c++/13/bits/random.tcc:
 
 /usr/include/boost/mpl/list/aux_/push_back.hpp:
 
@@ -2721,12 +2786,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/config/detail/suffix.hpp:
 
-/usr/include/boost/preprocessor/logical/bitand.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/arch/Default/Half.h:
-
-/usr/include/boost/mpl/pair.hpp:
-
 /usr/include/boost/preprocessor/control/while.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
@@ -2741,10 +2800,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/list/list20.hpp:
 
-/usr/include/eigen3/Eigen/src/Core/Reshaped.h:
-
-/usr/include/boost/mpl/list.hpp:
-
 /usr/include/boost/mpl/deref.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/bind.hpp:
@@ -2752,6 +2807,10 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/c++/13/bits/move_only_function.h:
 
 /usr/include/c++/13/bits/exception_defines.h:
+
+/usr/include/eigen3/Eigen/src/Core/SelfAdjointView.h:
+
+/usr/include/boost/mpl/vector/aux_/include_preprocessed.hpp:
 
 /usr/include/boost/range/distance.hpp:
 
@@ -2781,8 +2840,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/integral_c_fwd.hpp:
 
-/usr/include/boost/preprocessor/logical/bool.hpp:
-
 /usr/include/opencv4/opencv2/flann/timer.h:
 
 /usr/include/boost/mpl/integral_c.hpp:
@@ -2792,10 +2849,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/pcl-1.14/pcl/common/impl/common.hpp:
 
 /usr/include/c++/13/debug/debug.h:
-
-/usr/include/boost/mpl/vector/aux_/include_preprocessed.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/SelfAdjointView.h:
 
 /usr/include/boost/preprocessor/array/data.hpp:
 
@@ -2847,6 +2900,10 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/signals2/detail/unique_lock.hpp:
 
+/usr/include/eigen3/Eigen/src/Core/Product.h:
+
+/usr/include/boost/mpl/find_if.hpp:
+
 /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
@@ -2856,8 +2913,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/preprocessor/control/limits/while_256.hpp:
 
 /usr/include/boost/utility/identity_type.hpp:
-
-/usr/include/boost/mpl/empty_fwd.hpp:
 
 /usr/include/c++/13/bits/stl_construct.h:
 
@@ -2876,6 +2931,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/list/aux_/O1_size.hpp:
 
 /usr/include/boost/preprocessor/arithmetic/sub.hpp:
+
+/usr/include/boost/random/detail/large_arithmetic.hpp:
 
 /usr/include/boost/mpl/contains.hpp:
 
@@ -2915,21 +2972,27 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/aux_/template_arity_fwd.hpp:
 
-/usr/include/eigen3/Eigen/src/Core/StlIterators.h:
-
 /usr/include/boost/mpl/aux_/static_cast.hpp:
 
 /usr/include/boost/mpl/aux_/reverse_fold_impl.hpp:
 
 /usr/include/c++/13/bits/stl_iterator.h:
 
+/usr/include/boost/mpl/list.hpp:
+
+/usr/include/boost/random/detail/ptr_helper.hpp:
+
 /usr/include/boost/mpl/vector/aux_/pop_back.hpp:
 
 /usr/include/boost/mpl/aux_/config/intel.hpp:
 
-/usr/include/boost/optional/detail/optional_hash.hpp:
+/usr/include/vtk-9.1/vtkAOSDataArrayTemplate.h:
 
-/usr/include/c++/13/type_traits:
+/usr/include/eigen3/Eigen/src/Core/PartialReduxEvaluator.h:
+
+/usr/include/c++/13/backward/auto_ptr.h:
+
+/usr/include/boost/mpl/aux_/preprocessed/gcc/plus.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/less.hpp:
 
@@ -2951,13 +3014,31 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/core/ref.hpp:
 
-/usr/include/boost/mpl/aux_/preprocessed/gcc/equal_to.hpp:
+/usr/include/pcl-1.14/pcl/visualization/common/actor_map.h:
 
-/usr/include/pcl-1.14/pcl/pcl_base.h:
+/usr/include/boost/preprocessor/detail/limits/auto_rec_256.hpp:
 
-/usr/include/boost/iterator/iterator_facade.hpp:
+/usr/include/boost/mpl/aux_/preprocessed/gcc/iter_fold_if_impl.hpp:
 
-/usr/include/eigen3/Eigen/src/Core/BooleanRedux.h:
+/usr/include/boost/mpl/vector/aux_/size.hpp:
+
+/usr/include/boost/ref.hpp:
+
+/usr/include/boost/mpl/aux_/preprocessed/gcc/inherit.hpp:
+
+/usr/include/boost/mpl/aux_/front_impl.hpp:
+
+/usr/include/boost/mpl/prior.hpp:
+
+/usr/include/eigen3/Eigen/Geometry:
+
+/usr/include/boost/mpl/aux_/preprocessed/gcc/full_lambda.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h:
+
+/usr/include/boost/algorithm/string/detail/finder.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/CoreEvaluators.h:
 
 /usr/include/boost/lexical_cast/detail/lcast_unsigned_converters.hpp:
 
@@ -2966,10 +3047,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/numeric/conversion/detail/sign_mixture.hpp:
 
 /usr/include/boost/preprocessor/detail/is_binary.hpp:
-
-/usr/include/c++/13/bits/list.tcc:
-
-/usr/include/boost/function_equal.hpp:
 
 /usr/include/boost/preprocessor/arithmetic/add.hpp:
 
@@ -3007,13 +3084,11 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/range/empty.hpp:
 
-/usr/include/boost/utility.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/Map.h:
-
 /usr/include/boost/exception/exception.hpp:
 
 /usr/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h:
+
+/usr/include/boost/random/detail/seed.hpp:
 
 /usr/include/boost/mpl/vector/aux_/iterator.hpp:
 
@@ -3045,9 +3120,15 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/config.hpp:
 
-/usr/include/boost/algorithm/string/detail/finder.hpp:
+/usr/include/boost/optional/detail/optional_hash.hpp:
 
-/usr/include/eigen3/Eigen/src/Core/CoreEvaluators.h:
+/usr/include/boost/function_equal.hpp:
+
+/usr/include/c++/13/bits/list.tcc:
+
+/usr/include/c++/13/type_traits:
+
+/usr/include/boost/functional/hash_fwd.hpp:
 
 /usr/include/boost/predef/os/bsd/bsdi.h:
 
@@ -3058,8 +3139,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/is_placeholder.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/advance_forward.hpp:
-
-/usr/include/boost/functional/hash_fwd.hpp:
 
 /usr/include/boost/core/noncopyable.hpp:
 
@@ -3093,23 +3172,7 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/concept/usage.hpp:
 
-/usr/include/boost/mpl/vector/aux_/size.hpp:
-
-/usr/include/boost/ref.hpp:
-
-/usr/include/boost/mpl/aux_/preprocessed/gcc/inherit.hpp:
-
-/usr/include/boost/mpl/aux_/front_impl.hpp:
-
-/usr/include/boost/mpl/prior.hpp:
-
-/usr/include/eigen3/Eigen/Geometry:
-
 /usr/include/boost/core/cmath.hpp:
-
-/usr/include/boost/numeric/conversion/conversion_traits.hpp:
-
-/usr/include/boost/mpl/aux_/config/pp_counter.hpp:
 
 /usr/include/boost/mpl/aux_/has_type.hpp:
 
@@ -3159,6 +3222,14 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/preprocessor/slot/detail/def.hpp:
 
+/usr/include/boost/random/detail/const_mod.hpp:
+
+/usr/include/pcl-1.14/pcl/sample_consensus/method_types.h:
+
+/usr/include/boost/numeric/conversion/conversion_traits.hpp:
+
+/usr/include/boost/mpl/aux_/config/pp_counter.hpp:
+
 /usr/include/boost/config/platform/linux.hpp:
 
 /usr/include/boost/smart_ptr/detail/sp_convertible.hpp:
@@ -3184,12 +3255,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/type_traits/conversion_traits.hpp:
 
 /usr/include/boost/function/detail/prologue.hpp:
-
-/usr/include/pcl-1.14/pcl/visualization/common/actor_map.h:
-
-/usr/include/boost/preprocessor/detail/limits/auto_rec_256.hpp:
-
-/usr/include/boost/mpl/aux_/preprocessed/gcc/iter_fold_if_impl.hpp:
 
 /usr/include/boost/mpl/aux_/fold_impl.hpp:
 
@@ -3255,8 +3320,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/aux_/config/ctps.hpp:
 
-/usr/include/boost/integer_fwd.hpp:
-
 /usr/include/boost/type_traits/is_volatile.hpp:
 
 /usr/include/c++/13/bits/concept_check.h:
@@ -3285,19 +3348,19 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/detail/reference_content.hpp:
 
+/usr/include/boost/mpl/aux_/preprocessor/def_params_tail.hpp:
+
+/usr/include/boost/mpl/pop_back_fwd.hpp:
+
 /usr/include/boost/function/detail/requires_cxx11.hpp:
 
 /usr/include/boost/bind/storage.hpp:
 
 /usr/include/boost/type_traits/has_trivial_move_assign.hpp:
 
-/usr/include/boost/iterator/reverse_iterator.hpp:
+/usr/include/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
-
-/usr/include/vtk-9.1/vtkCommonExecutionModelModule.h:
-
-/usr/include/boost/algorithm/string/detail/predicate.hpp:
+/usr/include/boost/concept/detail/general.hpp:
 
 /usr/include/boost/core/allocator_access.hpp:
 
@@ -3310,16 +3373,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/predef/make.h:
 
 /usr/include/c++/13/bits/shared_ptr_atomic.h:
-
-/usr/include/boost/mpl/back_inserter.hpp:
-
-/usr/include/boost/iterator/iterator_concepts.hpp:
-
-/usr/include/pcl-1.14/pcl/point_types.h:
-
-/usr/include/boost/preprocessor/arithmetic/limits/inc_256.hpp:
-
-/usr/include/boost/mpl/aux_/arity.hpp:
 
 /usr/include/boost/mpl/vector/aux_/empty.hpp:
 
@@ -3335,23 +3388,29 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/c++/13/bits/locale_classes.tcc:
 
+/usr/include/boost/type_traits/detail/is_member_function_pointer_cxx_11.hpp:
+
+/usr/include/c++/13/cstdint:
+
+/usr/include/boost/integer/integer_mask.hpp:
+
 /usr/include/boost/concept_check.hpp:
 
 /usr/include/boost/mpl/aux_/config/lambda.hpp:
 
 /usr/include/boost/algorithm/string/constants.hpp:
 
+/usr/include/boost/utility.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/Map.h:
+
+/usr/include/boost/random/variate_generator.hpp:
+
 /usr/include/boost/preprocessor/inc.hpp:
 
 /usr/include/boost/preprocessor/array/size.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/bind_fwd.hpp:
-
-/usr/include/boost/preprocessor/arithmetic/detail/maximum_number.hpp:
-
-/usr/include/boost/iterator/iterator_traits.hpp:
-
-/usr/include/boost/lexical_cast/detail/converter_lexical_streams.hpp:
 
 /usr/include/stdint.h:
 
@@ -3421,6 +3480,38 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/smart_ptr/detail/sp_has_gcc_intrinsics.hpp:
 
+/usr/include/boost/mpl/back_inserter.hpp:
+
+/usr/include/boost/iterator/iterator_concepts.hpp:
+
+/usr/include/pcl-1.14/pcl/point_types.h:
+
+/usr/include/boost/preprocessor/arithmetic/limits/inc_256.hpp:
+
+/usr/include/boost/mpl/aux_/arity.hpp:
+
+/usr/include/boost/mpl/aux_/preprocessed/gcc/equal_to.hpp:
+
+/usr/include/pcl-1.14/pcl/pcl_base.h:
+
+/usr/include/boost/iterator/iterator_facade.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/BooleanRedux.h:
+
+/usr/include/boost/preprocessor/arithmetic/detail/maximum_number.hpp:
+
+/usr/include/boost/lexical_cast/detail/converter_lexical_streams.hpp:
+
+/usr/include/boost/iterator/iterator_traits.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/vtk-9.1/vtkCommonExecutionModelModule.h:
+
+/usr/include/boost/algorithm/string/detail/predicate.hpp:
+
+/usr/include/boost/iterator/reverse_iterator.hpp:
+
 /usr/include/boost/get_pointer.hpp:
 
 /usr/include/boost/lexical_cast/detail/converter_lexical.hpp:
@@ -3461,9 +3552,15 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/mpl/aux_/begin_end_impl.hpp:
 
+/usr/include/boost/random/detail/enable_warnings.hpp:
+
 /usr/include/boost/mpl/insert_range_fwd.hpp:
 
 /usr/include/boost/mpl/aux_/iter_fold_if_impl.hpp:
+
+/usr/include/eigen3/Eigen/src/Core/PlainObjectBase.h:
+
+/usr/include/eigen3/Eigen/src/Core/DiagonalProduct.h:
 
 /usr/include/boost/numeric/conversion/udt_builtin_mixture_enum.hpp:
 
@@ -3517,6 +3614,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/move/detail/type_traits.hpp:
 
+/usr/include/boost/random/mersenne_twister.hpp:
+
 /usr/include/boost/move/utility_core.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/byteswap.h:
@@ -3548,10 +3647,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/advance.hpp:
 
 /usr/include/c++/13/sstream:
-
-/usr/include/boost/concept/detail/general.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h:
 
 /usr/include/boost/mpl/always.hpp:
 
@@ -3598,10 +3693,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/aux_/config/arrays.hpp:
 
 /usr/include/c++/13/bits/predefined_ops.h:
-
-/usr/include/boost/mpl/aux_/preprocessed/gcc/full_lambda.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h:
 
 /usr/include/vtk-9.1/vtkSystemIncludes.h:
 
@@ -3667,6 +3758,10 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/concept/detail/concept_undef.hpp:
 
+/usr/include/boost/integer_fwd.hpp:
+
+/usr/include/boost/random/detail/operators.hpp:
+
 /usr/include/c++/13/bits/unique_lock.h:
 
 /usr/include/boost/mpl/aux_/config/integral.hpp:
@@ -3726,10 +3821,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/list/list10.hpp:
 
 /usr/include/boost/move/detail/meta_utils_core.hpp:
-
-/usr/include/boost/preprocessor/detail/auto_rec.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/Replicate.h:
 
 /usr/include/boost/mpl/aux_/has_begin.hpp:
 
@@ -3823,13 +3914,15 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/type_traits/is_float.hpp:
 
-/usr/include/boost/type_traits/is_member_function_pointer.hpp:
-
-/usr/include/c++/13/ctime:
-
 /usr/include/boost/preprocessor/facilities/overload.hpp:
 
+/usr/include/pcl-1.14/pcl/sample_consensus/sac.h:
+
 /usr/include/boost/signals2/expired_slot.hpp:
+
+/usr/include/boost/mpl/tag.hpp:
+
+/usr/include/boost/preprocessor/list/limits/fold_left_256.hpp:
 
 /usr/include/boost/mpl/aux_/numeric_cast_utils.hpp:
 
@@ -3847,9 +3940,31 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/preprocessor/arithmetic/mod.hpp:
 
-/usr/include/eigen3/Eigen/src/Core/Random.h:
+/usr/include/eigen3/Eigen/src/Core/arch/Default/Half.h:
+
+/usr/include/boost/mpl/pair.hpp:
+
+/usr/include/boost/preprocessor/logical/bitand.hpp:
+
+/usr/include/c++/13/ctime:
+
+/usr/include/boost/type_traits/is_member_function_pointer.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/or.hpp:
+
+/usr/include/boost/preprocessor/list/reverse.hpp:
+
+/usr/include/vtk-9.1/vtkLegacy.h:
+
+/usr/include/eigen3/Eigen/src/Core/products/Parallelizer.h:
+
+/usr/include/boost/preprocessor/logical/and.hpp:
+
+/usr/include/c++/13/bits/iterator_concepts.h:
+
+/usr/include/opencv4/opencv2/flann/kdtree_single_index.h:
+
+/usr/include/eigen3/Eigen/src/Core/CoreIterators.h:
 
 /usr/include/boost/preprocessor/logical/bitor.hpp:
 
@@ -3988,6 +4103,58 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/push_front_fwd.hpp:
 
 /usr/include/boost/preprocessor/variadic/size.hpp:
+
+/usr/include/boost/random/detail/config.hpp:
+
+/usr/include/c++/13/bits/cpp_type_traits.h:
+
+/usr/include/c++/13/cstdlib:
+
+/usr/include/c++/13/ext/atomicity.h:
+
+/usr/include/c++/13/bit:
+
+/usr/include/eigen3/Eigen/src/Core/ArrayBase.h:
+
+/usr/include/boost/random/detail/generator_bits.hpp:
+
+/usr/include/boost/utility/compare_pointees.hpp:
+
+/usr/include/boost/mpl/empty_fwd.hpp:
+
+/usr/include/boost/random/detail/generator_seed_seq.hpp:
+
+/usr/include/boost/random/detail/integer_log2.hpp:
+
+/usr/include/boost/random/detail/polynomial.hpp:
+
+/usr/include/opencv4/opencv2/core/optim.hpp:
+
+/usr/include/boost/smart_ptr/make_shared_array.hpp:
+
+/usr/include/eigen3/Eigen/src/StlSupport/StdVector.h:
+
+/usr/include/boost/mpl/min_max.hpp:
+
+/usr/include/boost/utility/detail/result_of_variadic.hpp:
+
+/usr/include/boost/random/detail/seed_impl.hpp:
+
+/usr/include/boost/random/detail/uniform_int_float.hpp:
+
+/usr/include/boost/random/traits.hpp:
+
+/usr/include/boost/random/uniform_01.hpp:
+
+/usr/include/boost/random/uniform_int.hpp:
+
+/usr/include/boost/type_traits/add_const.hpp:
+
+/usr/include/boost/utility/enable_if.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/include/boost/random/uniform_int_distribution.hpp:
 
 /usr/include/boost/range/algorithm/equal.hpp:
 
@@ -4143,9 +4310,15 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/pcl-1.14/pcl/visualization/common/common.h:
 
+/usr/include/boost/core/bit.hpp:
+
 /usr/include/c++/13/tr1/beta_function.tcc:
 
 /usr/include/boost/smart_ptr/detail/sp_counted_base.hpp:
+
+/usr/include/boost/preprocessor/variadic/limits/elem_64.hpp:
+
+/usr/include/c++/13/random:
 
 /usr/include/boost/smart_ptr/detail/sp_counted_base_gcc_atomic.hpp:
 
@@ -4174,16 +4347,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/smart_ptr/detail/yield_k.hpp:
 
 /usr/include/c++/13/tr1/ell_integral.tcc:
-
-/usr/include/opencv4/opencv2/core/optim.hpp:
-
-/usr/include/boost/smart_ptr/make_shared_array.hpp:
-
-/usr/include/eigen3/Eigen/src/StlSupport/StdVector.h:
-
-/usr/include/boost/mpl/min_max.hpp:
-
-/usr/include/boost/utility/detail/result_of_variadic.hpp:
 
 /usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h:
 
@@ -4218,10 +4381,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/type_traits/has_nothrow_copy.hpp:
 
 /usr/include/c++/13/algorithm:
-
-/usr/include/boost/type_traits/add_const.hpp:
-
-/usr/include/boost/utility/enable_if.hpp:
 
 /usr/include/boost/type_traits/add_pointer.hpp:
 
@@ -4266,10 +4425,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
 
 /usr/include/boost/type_traits/negation.hpp:
-
-/usr/include/boost/type_traits/detail/is_member_function_pointer_cxx_11.hpp:
-
-/usr/include/c++/13/cstdint:
 
 /usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector.h:
 
@@ -4389,6 +4544,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/boost/type_traits/is_signed.hpp:
 
+/usr/include/boost/integer/integer_log2.hpp:
+
 /usr/include/boost/type_traits/is_stateless.hpp:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h:
@@ -4448,8 +4605,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/core/alloc_construct.hpp:
 
 /usr/include/c++/13/backward/binders.h:
-
-/usr/include/boost/utility/compare_pointees.hpp:
 
 /usr/include/boost/utility/declval.hpp:
 
@@ -4527,8 +4682,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/c++/13/bits/basic_string.tcc:
 
-/usr/include/c++/13/bits/cpp_type_traits.h:
-
 /usr/include/opencv4/opencv2/stitching.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessor/params.hpp:
@@ -4596,6 +4749,20 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/boost/mpl/vector/aux_/O1_size.hpp:
 
 /usr/include/c++/13/bits/quoted_string.h:
+
+/usr/include/boost/preprocessor/logical/bool.hpp:
+
+/usr/include/c++/13/bits/random.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+/usr/include/opencv4/opencv2/ml.hpp:
+
+/usr/include/boost/random/detail/disable_warnings.hpp:
+
+/usr/include/boost/type_index.hpp:
+
+/usr/include/c++/13/ext/alloc_traits.h:
 
 /usr/include/boost/type_index/stl_type_index.hpp:
 
@@ -4681,8 +4848,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/c++/13/bits/stl_raw_storage_iter.h:
 
-/usr/include/eigen3/Eigen/src/Core/Swap.h:
-
 /usr/include/c++/13/bits/stl_relops.h:
 
 /usr/include/c++/13/bits/stl_tree.h:
@@ -4757,16 +4922,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/c++/13/exception:
 
-/usr/include/eigen3/Eigen/src/Core/SolveTriangular.h:
-
-/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
-
-/usr/include/opencv4/opencv2/ml.hpp:
-
-/usr/include/boost/type_index.hpp:
-
-/usr/include/c++/13/ext/alloc_traits.h:
-
 /usr/include/eigen3/Eigen/src/Core/ConditionEstimator.h:
 
 /usr/include/c++/13/ext/numeric_traits.h:
@@ -4796,6 +4951,8 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/c++/13/map:
 
 /usr/include/c++/13/math.h:
+
+/usr/include/boost/random/detail/signed_unsigned_tools.hpp:
 
 /usr/include/c++/13/tr1/exp_integral.tcc:
 
@@ -4873,10 +5030,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 
 /usr/include/c++/13/unordered_map:
 
-/usr/include/eigen3/Eigen/src/Core/DiagonalProduct.h:
-
-/usr/include/eigen3/Eigen/src/Core/PlainObjectBase.h:
-
 /usr/include/c++/13/version:
 
 /usr/include/boost/preprocessor/control/expr_iif.hpp:
@@ -4892,14 +5045,6 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/eigen3/Eigen/src/Cholesky/LDLT.h:
 
 /usr/include/eigen3/Eigen/src/Core/Array.h:
-
-/usr/include/c++/13/cstdlib:
-
-/usr/include/c++/13/ext/atomicity.h:
-
-/usr/include/c++/13/bit:
-
-/usr/include/eigen3/Eigen/src/Core/ArrayBase.h:
 
 /usr/include/boost/mpl/aux_/push_front_impl.hpp:
 
@@ -4942,43 +5087,3 @@ CMakeFiles/hough.dir/main.cpp.o: /home/fys/Program/AdvancedGIS_SegmPC/hough_sing
 /usr/include/eigen3/Eigen/src/Core/IO.h:
 
 /usr/include/eigen3/Eigen/src/Core/MathFunctionsImpl.h:
-
-/usr/include/eigen3/Eigen/src/Core/MatrixBase.h:
-
-/usr/include/eigen3/Eigen/src/Core/NoAlias.h:
-
-/usr/include/eigen3/Eigen/src/Core/NumTraits.h:
-
-/usr/include/vtk-9.1/vtkAOSDataArrayTemplate.h:
-
-/usr/include/c++/13/backward/auto_ptr.h:
-
-/usr/include/boost/mpl/aux_/preprocessed/gcc/plus.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/PartialReduxEvaluator.h:
-
-/usr/include/opencv4/opencv2/stitching/detail/seam_finders.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/PermutationMatrix.h:
-
-/usr/include/boost/mpl/find_if.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/Product.h:
-
-/usr/include/eigen3/Eigen/src/Core/ProductEvaluators.h:
-
-/usr/include/eigen3/Eigen/src/Core/Redux.h:
-
-/usr/include/eigen3/Eigen/src/Core/Ref.h:
-
-/usr/include/eigen3/Eigen/src/Core/ReturnByValue.h:
-
-/usr/include/eigen3/Eigen/src/Core/Reverse.h:
-
-/usr/include/eigen3/Eigen/src/Core/StableNorm.h:
-
-/usr/include/eigen3/Eigen/src/Core/Stride.h:
-
-/usr/include/boost/next_prior.hpp:
-
-/usr/include/eigen3/Eigen/src/Core/Transpose.h:

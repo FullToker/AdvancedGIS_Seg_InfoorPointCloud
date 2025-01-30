@@ -3,8 +3,15 @@ import json
 import open3d as o3d
 import matplotlib.pyplot as plt
 
+"""
+bincols: each row(point) contains how many attributes in bin
+outputlabel: choose some label to filter
+"""
 
-def mask_bin(binpath: str, jsonpath: str, outpath: str, binCols: int):
+
+def mask_bin(
+    binpath: str, jsonpath: str, outpath: str, binCols: int, outputlabel: list
+):
     point_cloud = np.fromfile(binpath, dtype=np.float32).reshape(-1, binCols)
     print(f"points in bin: {point_cloud.shape}")
     with open(jsonpath, "r") as f:
@@ -23,7 +30,7 @@ def mask_bin(binpath: str, jsonpath: str, outpath: str, binCols: int):
     filtered_colors = []
     for i, label in enumerate(mask_ls):
         """for S3DIS dataset, label ['ceiling', 'floor', 'wall', 'beam', ...]"""
-        if label in [2]:  # Only keep points with labels 1 and 2.
+        if label in outputlabel:  # Only keep points with labels 1 and 2.
             filtered_points.append(point_cloud[i, 0:3])
             filtered_colors.append(colors[i])
 
@@ -44,9 +51,9 @@ if __name__ == "__main__":
 
     bin_path = "./mmde3d/preds/synth1_downsample.bin"
     json_path = "./mmde3d/preds/synth1_downsample.json"
-    ply_path = "./mmde3d/preds/synth1_paconv_walls.ply"
+    ply_path = "./mmde3d/preds/synth1_paconv_floor.ply"
 
-    mask_bin(bin_path, json_path, ply_path, binCols=6)
+    mask_bin(bin_path, json_path, ply_path, binCols=6, outputlabel=[1])
 
 """
     with open(json_path, "r") as f:

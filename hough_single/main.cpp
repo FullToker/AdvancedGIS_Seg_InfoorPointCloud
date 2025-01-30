@@ -16,6 +16,8 @@
 #include <pcl/io/ply_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <pcl/sample_consensus/method_types.h>
+#include <pcl/sample_consensus/model_types.h>
 #include <pcl/visualization/pcl_visualizer.h>
 
 /*
@@ -28,6 +30,17 @@
 
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
+
+// when come back from the image to pcd
+struct MID_PT {
+  double x;
+  double y;
+
+  // on the image system
+  int col;
+  int row;
+};
+
 // bool to control the window and the save
 const bool is_show = false;
 const bool is_save = false;
@@ -387,6 +400,10 @@ void region_extraction(std::string filename) {
   cvshow("watershed", water_result);
 }
 
+/*
+ * flood fill to get the whole room structure
+ *
+ * */
 void flood_fill(std::string filename) {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
@@ -424,7 +441,7 @@ void flood_fill(std::string filename) {
 
   /*point to matrix*/
   std::cout << "Start build matrix...";
-  float pix_size = 0.04; // a hypermeter need to set
+  float pix_size = 0.03; // a hypermeter need to set
   float residual = 10;
   int row =
       static_cast<int>((maxpt.y + residual - (minpt.y - residual)) / pix_size);
@@ -582,7 +599,7 @@ void flood_fill(std::string filename) {
    * find contours -> approx poly DP*/
   cv::Mat bin_mask;
   cv::threshold(mask, bin_mask, 108, 255, cv::THRESH_BINARY);
-  cvshow("bin mask", bin_mask);
+  cvshow("bin mask", bin_mask, true);
 
   std::vector<std::vector<cv::Point>> final_contours;
   std::vector<cv::Vec4i> hierarchy;
@@ -616,19 +633,128 @@ void flood_fill(std::string filename) {
   cv::polylines(polyImg, final_poly, true, 0, 2);
   cvshow("Final polygon", polyImg, true);
 
+  //-----------------------------------------------------------/---------------------------------------------//-----------/
+  /* x y in final_poly --> x y in pcd's coordinates system
+   * Now we need back to the ture coords in pcd CRS
+   * Use pix_size, minpt, maxpt, residual
+   * This step will casue uncertainty
+   *
+   */
+  std::cout << "Extrat Successfully! Begin to build model ... " << std::endl;
+  std::vector<MID_PT> endPTs;
+  // redefinition of iterator of the final_poly
+  itf = final_poly.begin();
+  while (itf != final_poly.end()) {
+    MID_PT pt;
+    pt.row = (*itf).y;
+    pt.col = (*itf).x;
+
+    double original_x = minpt.x + pt.col * pix_size - residual - pix_size;
+    ;
+    double original_y = maxpt.y - pt.row * pix_size + residual;
+    pt.x = original_x;
+    pt.y = original_y;
+
+    endPTs.push_back(pt);
+    std::cout << "row: " << (*itf).y << "; back to pcd y: " << original_y
+              << " -- ";
+
+    std::cout << "col: " << (*itf).x << "; back to pcd x: " << original_x
+              << std::endl;
+
+    ++itf;
+  }
 
   //---------------------------------------------------------//--------------------------------//------------------------------------//
   cv::destroyAllWindows();
 }
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
+/*
+ * get the ceiling or floor plane simply
+ * see them as the plane parallel to the xy
+ * estimate the mean height(z value)
+ * */
+void extract_C_F_simple(std::string filename) {
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
+  if (pcl::io::loadPLYFile<pcl::PointXYZ>(filename, *cloud) == -1) {
+    PCL_ERROR("Couldn't read file\n");
+    return;
+  }
+
+  std::cout << "Loaded " << cloud->points.size() << " points from " << filename
+            << std::endl;
+
+  //----------------------------------------------------------------------------////////
+  /*visualization of the point cloud using PCL */
+  pcl::visualization::PCLVisualizer viewer("Point Cloud Viewer");
+  viewer.setBackgroundColor(0, 0, 0);
+
+  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
+      cloud_color_handler(cloud, 255, 255, 255); // White color
+  viewer.addPointCloud(cloud, cloud_color_handler, "cloud");
+  viewer.setPointCloudRenderingProperties(
+      pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");
+  viewer.addCoordinateSystem(1.0);
+  viewer.spinOnce(100);
+
+  //-------------------------------------///////////////////////------------------------///////////////
+  /* has some problems with linking libraries*/
+  /*
+  std::cout <<"extract the biggest plane using RANSAC..."<<std::endl;
+  // calculate the average height
+  // start with extract the plane using RANSAC(filtering)
+  pcl::SACSegmentation<PointT> seg;
+  pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+  pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+  seg.setOptimizeCoefficients(true);
+  seg.setModelType(pcl::SACMODEL_PLANE);
+  seg.setMethodType(pcl::SAC_RANSAC);
+  seg.setMaxIterations(1000);
+  seg.setDistanceThreshold(0.01);
+
+  seg.setInputCloud(cloud);
+  seg.segment(*inliers, *coefficients);
+
+  if (inliers->indices.size() == 0) {
+    std::cerr << "no plane model" << std::endl;
+    return;
+  }
+
+  std::cout << "plane model is：ax + by + cz + d = 0，with: "
+            << "a = " << coefficients->values[0]
+            << ", b = " << coefficients->values[1]
+            << ", c = " << coefficients->values[2]
+            << ", d = " << coefficients->values[3] << std::endl;
+
+*/
+
+  /*calculate the average height of this plane
+   * assume the ceiling and floor are both parallel with the xy
+   * */
+  double sum_z = 0;
+  for (const auto &point : *cloud) {
+    sum_z += point.z;
+  }
+  double avg_z = sum_z / cloud->points.size();
+
+  std::cout << "Average Z Value is: " << avg_z << std::endl;
+}
+
+int main() {
+  std::cout << "Hello, PCL + OpenCV!" << std::endl;
+
+  /*
   std::string filename = "/media/fys/T7 "
                          "Shield/AdvancedGIS/rebuild/hdbscan_synth1/"
-                         "label27.ply"; // path as a hypermeter
-  // region_extraction(filename);
+                         "label11.ply"; // path as a hypermeter
   flood_fill(filename);
+  */
+
+  std::string name =
+      "/media/fys/T7 "
+      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
+  extract_C_F_simple(name);
 
   return 0;
 }

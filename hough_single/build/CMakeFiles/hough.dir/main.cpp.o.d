@@ -1119,6 +1119,8 @@ CMakeFiles/hough.dir/main.cpp.o: \
  /usr/include/boost/mpl/aux_/preprocessed/gcc/iter_fold_impl.hpp \
  /usr/include/boost/mpl/iterator_range.hpp \
  /usr/include/boost/mpl/min_max.hpp \
+ /usr/include/pcl-1.14/pcl/sample_consensus/method_types.h \
+ /usr/include/pcl-1.14/pcl/sample_consensus/model_types.h \
  /usr/include/pcl-1.14/pcl/visualization/pcl_visualizer.h \
  /usr/include/pcl-1.14/pcl/correspondence.h \
  /usr/include/pcl-1.14/pcl/pcl_base.h \

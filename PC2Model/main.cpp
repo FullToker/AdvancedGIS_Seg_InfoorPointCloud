@@ -34,7 +34,7 @@ namespace fs = std::filesystem;
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
 // bool to control the window and the save
-const bool is_show = false;
+const bool is_show = true;
 const bool is_save = false;
 
 // when come back from the image to pcd
@@ -928,13 +928,11 @@ void combine_all_rooms_model(
 
 int main() {
   std::cout << "Hello, PCL + OpenCV!" << std::endl;
-
-  /*
+  std::vector<END_PT> footprint;
   std::string filename = "/media/fys/T7 "
                          "Shield/AdvancedGIS/rebuild/hdbscan_synth1/"
                          "label11.ply"; // path as a hypermeter
-  flood_fill(filename);
-  */
+  flood_fill(filename, footprint);
 
   std::string name =
       "/media/fys/T7 "

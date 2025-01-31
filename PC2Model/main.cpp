@@ -1,4 +1,5 @@
 #include <eigen3/Eigen/Core>
+#include <filesystem>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/core/matx.hpp>
@@ -29,8 +30,12 @@
  *
  * */
 
+namespace fs = std::filesystem;
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
+// bool to control the window and the save
+const bool is_show = false;
+const bool is_save = false;
 
 // when come back from the image to pcd
 struct MID_PT {
@@ -49,9 +54,11 @@ struct END_PT {
   double z;
 };
 
-// bool to control the window and the save
-const bool is_show = false;
-const bool is_save = false;
+// ceiling and floor struct for 3D model
+struct CFs {
+  std::vector<END_PT> ceiling;
+  std::vector<END_PT> floor;
+};
 
 void cvshow(std::string window_name, cv::Mat &image_to_show,
             bool flag = is_show) {
@@ -665,7 +672,7 @@ void flood_fill(std::string filename, std::vector<END_PT> &footprint) {
     pt.x = original_x;
     pt.y = original_y;
 
-    endPTs.push_back(pt);
+    endPTs.emplace_back(pt);
     std::cout << "row: " << (*itf).y << "; back to pcd y: " << original_y
               << " -- ";
 
@@ -675,7 +682,7 @@ void flood_fill(std::string filename, std::vector<END_PT> &footprint) {
     END_PT ept;
     ept.x = original_x;
     ept.y = original_y;
-    footprint.push_back(ept);
+    footprint.emplace_back(ept);
 
     ++itf;
   }
@@ -761,18 +768,25 @@ void extract_C_F_simple(std::string filename, double &output_height) {
  * input the one room structure and information from ceiling and floor
  *  rebuild the model -> single room representation: Surface boundary
  *  number of walls + 2 : ceiling and floor
+ *  wall rep: contains each wall rep(a vector of pt)
+ *  uplow rep: contains ceiling and floor rep; each is also a vector of pt
  */
-void single_model_build(std::string wall_path, std::string ceiling_path,
-                        std::string floor_path,
-                        std::vector<std::vector<END_PT>> wall_rep,
-                        std::vector<std::vector<END_PT>> uplow_rep) {
+void single_model_build(std::string wall_path,
+                        // std::string ceiling_path,
+                        // std::string floor_path,
+                        double c_height, double f_height,
+                        std::vector<std::vector<END_PT>> &wall_rep,
+                        CFs &uplow_rep) {
   std::vector<END_PT> layout;
   flood_fill(wall_path, layout);
   std::cout << "find " << layout.size() << " walls in this file.." << std::endl;
 
+  /*
   double c_height, f_height;
   extract_C_F_simple(ceiling_path, c_height);
   extract_C_F_simple(floor_path, f_height);
+  */
+
   std::cout << "ceiling z is " << c_height << std::endl;
   std::cout << "floor z is " << f_height << std::endl;
   // static_assert(c_height > f_height, "Ceiling must be higher than the
@@ -788,22 +802,22 @@ void single_model_build(std::string wall_path, std::string ceiling_path,
     corner.x = (*itl).x;
     corner.y = (*itl).y;
     corner.z = f_height;
-    corner_wall.push_back(corner);
+    corner_wall.emplace_back(corner);
 
     corner.x = (*(itl + 1)).x;
     corner.y = (*(itl + 1)).y;
     corner.z = f_height;
-    corner_wall.push_back(corner);
+    corner_wall.emplace_back(corner);
     corner.x = (*(itl + 1)).x;
     corner.y = (*(itl + 1)).y;
     corner.z = c_height;
-    corner_wall.push_back(corner);
+    corner_wall.emplace_back(corner);
     corner.x = (*itl).x;
     corner.y = (*itl).y;
     corner.z = c_height;
-    corner_wall.push_back(corner);
+    corner_wall.emplace_back(corner);
 
-    wall_rep.push_back(corner_wall);
+    wall_rep.emplace_back(corner_wall);
     ++itl;
   }
   itl = layout.end();
@@ -812,22 +826,22 @@ void single_model_build(std::string wall_path, std::string ceiling_path,
   corner.x = (*itl).x;
   corner.y = (*itl).y;
   corner.z = f_height;
-  corner_wall.push_back(corner);
+  corner_wall.emplace_back(corner);
 
   corner.x = (*(layout.begin())).x;
   corner.y = (*(layout.begin())).y;
   corner.z = f_height;
-  corner_wall.push_back(corner);
+  corner_wall.emplace_back(corner);
   corner.x = (*(layout.begin())).x;
   corner.y = (*(layout.begin())).y;
   corner.z = c_height;
-  corner_wall.push_back(corner);
+  corner_wall.emplace_back(corner);
   corner.x = (*itl).x;
   corner.y = (*itl).y;
   corner.z = c_height;
-  corner_wall.push_back(corner);
+  corner_wall.emplace_back(corner);
 
-  wall_rep.push_back(corner_wall);
+  wall_rep.emplace_back(corner_wall);
 
   if (wall_rep.size() != layout.size()) {
     std::cout << "Wrong number of walls rep!" << std::endl;
@@ -835,10 +849,82 @@ void single_model_build(std::string wall_path, std::string ceiling_path,
   }
 
   // ceiling and floor rep
-  
+  itl = layout.begin();
+  std::vector<END_PT> cPTs, fPTs;
+  while (itl != layout.end()) {
+    END_PT cpt, fpt;
+    cpt.x = (*itl).x;
+    cpt.y = (*itl).y;
+    cpt.z = c_height;
+    cPTs.emplace_back(cpt);
+    fpt.x = (*itl).x;
+    fpt.y = (*itl).y;
+    fpt.z = f_height;
+    fPTs.emplace_back(fpt);
+
+    ++itl;
+  }
+  // add c and f to the uplow_rep
+  uplow_rep.ceiling = cPTs;
+  uplow_rep.floor = fPTs;
+}
+
+//-------------------------------------------------------------------------/////////
+/* get all ply files in one floder
+ * to get the name of file: path.stem().string()
+ * */
+std::vector<fs::path> find_ply_files(const fs::path &dir_path) {
+  std::vector<fs::path> ply_files;
+  if (fs::exists(dir_path) && fs::is_directory(dir_path)) {
+    for (const auto &entry : fs::directory_iterator(dir_path)) {
+      if (entry.is_regular_file() && entry.path().extension() == ".ply") {
+        ply_files.push_back(entry.path());
+      }
+    }
+  }
+  return ply_files;
 }
 
 /*deal with the whole folder to get the whole structure*/
+void combine_all_rooms_model(
+    std::string wall_dir, std::string ceiling_path, std::string floor_path,
+    std::vector<std::vector<std::vector<END_PT>>> &all_room_walls,
+    std::vector<CFs> &all_uplow) {
+
+  // get the z value of ceiling and floor
+  double c_height, f_height;
+  extract_C_F_simple(ceiling_path, c_height);
+  extract_C_F_simple(floor_path, f_height);
+
+  std::cout << "ceiling z is " << c_height << std::endl;
+  std::cout << "floor z is " << f_height << std::endl;
+
+  // get the all walls path
+  std::vector<fs::path> wall_ply_paths = find_ply_files(wall_dir);
+  std::cout << "there are " << wall_ply_paths.size() << " rooms in the folder."
+            << std::endl;
+
+  // iterate all wall ply files
+  std::vector<fs::path>::iterator itpath = wall_ply_paths.begin();
+
+  all_room_walls.clear();
+  all_uplow.clear();
+  while (itpath != wall_ply_paths.end()) {
+
+    std::vector<std::vector<END_PT>> wall_single_room;
+    CFs uplow_single_room;
+
+    single_model_build((*itpath), c_height, f_height, wall_single_room,
+                       uplow_single_room);
+
+    all_room_walls.emplace_back(wall_single_room);
+    all_uplow.emplace_back(uplow_single_room);
+
+    ++itpath;
+  }
+
+  std::cout << "Done!" << std::endl;
+}
 
 int main() {
   std::cout << "Hello, PCL + OpenCV!" << std::endl;
@@ -854,6 +940,21 @@ int main() {
       "/media/fys/T7 "
       "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
   // extract_C_F_simple(name);
+  std::string wall_dir = "/media/fys/T7 "
+                         "Shield/AdvancedGIS/rebuild/hdbscan_synth1/walls/";
+  std::string c_pcd =
+      "/media/fys/T7 "
+      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
+  std::string f_pcd =
+      "/media/fys/T7 "
+      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
+
+  std::vector<std::vector<std::vector<END_PT>>> whole_story;
+  std::vector<CFs> story_cf;
+  combine_all_rooms_model(wall_dir, c_pcd, f_pcd, whole_story, story_cf);
+
+  std::cout << "Number of room is: " << whole_story.size() << std::endl;
+  std::cout << "size of uplow is: " << story_cf.size() << std::endl;
 
   return 0;
 }

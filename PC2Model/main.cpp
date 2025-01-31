@@ -34,7 +34,7 @@ namespace fs = std::filesystem;
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
 // bool to control the window and the save
-const bool is_show = true;
+const bool is_show = false;
 const bool is_save = false;
 
 // when come back from the image to pcd
@@ -820,7 +820,6 @@ void single_model_build(std::string wall_path,
     wall_rep.emplace_back(corner_wall);
     ++itl;
   }
-  itl = layout.end();
   std::vector<END_PT> corner_wall;
   END_PT corner;
   corner.x = (*itl).x;
@@ -926,13 +925,66 @@ void combine_all_rooms_model(
   std::cout << "Done!" << std::endl;
 }
 
+/*
+ * cout all coors of the whole room
+ * iterate the each room
+ * */
+void out_all_corner(
+    const std::vector<std::vector<std::vector<END_PT>>> &whole_story,
+    const std::vector<CFs> &whole_cf) {
+  std::cout << "all  " << whole_story.size() << " rooms in the vector"
+            << ", and now output all coords:" << std::endl;
+  // static_assert(whole_story.size() == whole_cf.size(),"there are different
+  // numbers of room in wall and cf!");
+
+  auto itRoomWall = whole_story.begin();
+  auto itRoomCF = whole_cf.begin();
+
+  while (itRoomWall != whole_story.end() && itRoomCF != whole_cf.end()) {
+    std::cout << "One Room:  " << std::endl;
+
+    std::vector<std::vector<END_PT>> oneroomWall = *itRoomWall;
+    CFs oneroomCF = *itRoomCF;
+    std::vector<END_PT> ceiling_pts = oneroomCF.ceiling;
+    std::vector<END_PT> floor_pts = oneroomCF.floor;
+
+    std::cout << "all Walls:" << std::endl;
+    for (const auto &wall : oneroomWall) {
+      for (const auto &vertex : wall) {
+        std::cout << "(" << vertex.x << ", " << vertex.y << ", " << vertex.z
+                  << "), ";
+      }
+      std::cout << std::endl;
+    }
+    std::cout << "ceiling:" << std::endl;
+
+    for (const auto &pt : ceiling_pts) {
+      std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << "), ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "floor:" << std::endl;
+    for (const auto &pt : floor_pts) {
+      std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << "), ";
+    }
+    std::cout << std::endl;
+
+    std::cout << std::endl;
+
+    ++itRoomWall;
+    ++itRoomCF;
+  }
+}
+
 int main() {
   std::cout << "Hello, PCL + OpenCV!" << std::endl;
+  /*
   std::vector<END_PT> footprint;
   std::string filename = "/media/fys/T7 "
                          "Shield/AdvancedGIS/rebuild/hdbscan_synth1/"
                          "label11.ply"; // path as a hypermeter
   flood_fill(filename, footprint);
+  */
 
   std::string name =
       "/media/fys/T7 "
@@ -953,6 +1005,8 @@ int main() {
 
   std::cout << "Number of room is: " << whole_story.size() << std::endl;
   std::cout << "size of uplow is: " << story_cf.size() << std::endl;
+
+  out_all_corner(whole_story, story_cf);
 
   return 0;
 }

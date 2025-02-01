@@ -43,22 +43,29 @@ def mask_bin(
 
 
 if __name__ == "__main__":
-    """
-    bin_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin"
-    json_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.json"
-    ply_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_ds_paconv_walls.ply"
-    """
 
+    bin_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_c1.bin"
+    json_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_c1.json"
+    ply_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/GE_006_c1_012.ply"
+
+    """
     bin_path = "./mmde3d/preds/synth1_downsample.bin"
     json_path = "./mmde3d/preds/synth1_downsample.json"
     ply_path = "./mmde3d/preds/synth1_paconv_floor.ply"
+    """
 
-    mask_bin(bin_path, json_path, ply_path, binCols=6, outputlabel=[1])
+    mask_bin(
+        bin_path,
+        json_path,
+        ply_path,
+        binCols=6,
+        outputlabel=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    )
 
-"""
+    """
     with open(json_path, "r") as f:
         data = json.load(f)  # data is a dict
     print(type(data["pts_semantic_mask"]))  # is a list
     print(len(data["pts_semantic_mask"]))  # number is 135216
     print(type(data["pts_semantic_mask"][2])) # class int
-"""
+    """

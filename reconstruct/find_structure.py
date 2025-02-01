@@ -142,7 +142,7 @@ def select_pcd_with_labels(
             saved_pcd = o3d.geometry.PointCloud()
             saved_pcd.points = o3d.utility.Vector3dVector(pts)
             o3d.io.write_point_cloud(
-                f"./reconstruct/hdbscan/label{index}.ply", saved_pcd
+                f"./reconstruct/GE_005/label{index}.ply", saved_pcd
             )
 
     return new_pcd
@@ -165,9 +165,9 @@ def get_labels_most_pts(labels: np.ndarray, threshold: int):
 
 
 if __name__ == "__main__":
-    path = "./mmde3d/preds/synth1_paconv/all_walls.ply"
+    path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_005/ge005_c_allWalls.ply"
     # path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_ds_paconv_walls.ply"
 
     filtered_pcd, labels = cluster_pcd_with_hdbscan(path)
-    selected_labels = get_labels_most_pts(labels, threshold=4000)
+    selected_labels = get_labels_most_pts(labels, threshold=6000)
     select_pcd_with_labels(filtered_pcd, labels, selected_labels, flag=1)

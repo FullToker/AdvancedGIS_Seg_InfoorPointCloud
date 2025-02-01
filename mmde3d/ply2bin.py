@@ -74,7 +74,7 @@ def convert2bin_xyzrgb_shifted(input_path, output_path):
 
 
 # input: ply
-# output: bin(num, 6) xyz rgb Normalized XYZ
+# output: bin(num, 9) xyz rgb Normalized XYZ
 # this is same with the S3DIS dataset
 def convert2bin_xyzrgbNXYZ(input_path, output_path):
     plydata = PlyData.read(input_path)
@@ -133,6 +133,6 @@ if __name__ == "__main__":
     """
 
     convert2bin_xyzrgb_shifted(
-        "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.ply",
-        "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/01164_GE006_c1.ply",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_c1.bin",
     )

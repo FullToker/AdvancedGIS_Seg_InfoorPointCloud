@@ -44,9 +44,9 @@ def mask_bin(
 
 if __name__ == "__main__":
 
-    bin_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_c1.bin"
-    json_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_c1.json"
-    ply_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/GE_006_c1_012.ply"
+    bin_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.bin"
+    json_path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_downsample.json"
+    ply_path = "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_ge005/floor.ply"
 
     """
     bin_path = "./mmde3d/preds/synth1_downsample.bin"
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         json_path,
         ply_path,
         binCols=6,
-        outputlabel=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        outputlabel=[1],
     )
 
     """

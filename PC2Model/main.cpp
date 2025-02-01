@@ -309,7 +309,8 @@ void region_extraction(std::string filename) {
       current.x += dir.x;
       current.y += dir.y;
     }
-    if (count % 2 == 1) {
+    //
+    if (count == 1) {
       seed_pt = corner + 2 * dir;
       if (seed_pt.x >= 0 && seed_pt.x < image.cols && seed_pt.y >= 0 &&
           seed_pt.y < image.rows) {
@@ -457,7 +458,7 @@ void flood_fill(std::string filename, std::vector<END_PT> &footprint) {
 
   /*point to matrix*/
   std::cout << "Start build matrix...";
-  float pix_size = 0.03; // a hypermeter need to set
+  float pix_size = 0.05; // a hypermeter need to set
   float residual = 10;
   int row =
       static_cast<int>((maxpt.y + residual - (minpt.y - residual)) / pix_size);
@@ -492,19 +493,22 @@ void flood_fill(std::string filename, std::vector<END_PT> &footprint) {
   int residual_pix = residual / pix_size;
 
   std::vector<cv::Point> corners = {
-      cv::Point(0 + residual_pix, 0 + residual_pix),
-      cv::Point(image.cols - 1 - residual_pix, 0 + residual_pix),
-      cv::Point(0 + residual_pix, image.rows - 1 - residual_pix),
-      cv::Point(image.cols - 1 - residual_pix, image.rows - 1 - residual_pix)};
+      cv::Point(image.cols / 2, image.rows / 2), // center point
+      cv::Point(20 + residual_pix, 20 + residual_pix),
+      cv::Point(image.cols - 20 - residual_pix, 20 + residual_pix),
+      cv::Point(20 + residual_pix, image.rows - 20 - residual_pix),
+      cv::Point(image.cols - 20 - residual_pix,
+                image.rows - 20 - residual_pix)};
 
-  std::vector<cv::Point> directions = {cv::Point(1, 1), cv::Point(-1, 1),
-                                       cv::Point(1, -1), cv::Point(-1, -1)};
+  std::vector<cv::Point> directions = {cv::Point(1, 1), cv::Point(1, 1),
+                                       cv::Point(-1, 1), cv::Point(1, -1),
+                                       cv::Point(-1, -1)};
 
   cv::Mat result = image.clone();
   cv::cvtColor(result, result, cv::COLOR_GRAY2BGR);
 
   cv::Point seed_pt;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 5; i++) {
     cv::Point corner = corners[i];
     cv::Point dir = directions[i];
     int count = 0;
@@ -570,12 +574,33 @@ void flood_fill(std::string filename, std::vector<END_PT> &footprint) {
   */
 
   //-------------------------------------------------------------------////////////////////////
-  /* draw the convex hull*/
+  /* draw the convex hull
+   *
+   * for the situation there is only one contour: just draw convex hull for
+   * contours[0] for the situation there are more than one contour(much
+   * discontiunous part): draw concex hull for combinantion of all convexhull
+   * */
   std::vector<cv::Point> hull;
-  cv::convexHull(contours[0], hull);
-  std::cout << "size of the hull is: " << hull.size() << std::endl;
-  cv::polylines(contour_result, hull, true, 166, 1);
-  cvshow("convex hull", contour_result, false);
+  if (contours.size() == 1) {
+    cv::convexHull(contours[0], hull);
+    std::cout << "size of the hull is: " << hull.size() << std::endl;
+    cv::polylines(contour_result, hull, true, 166, 1);
+    cvshow("convex hull", contour_result, false);
+  } else if (contours.size() > 1) {
+    std::vector<cv::Point> allHullPoints;
+    for (size_t i = 0; i < contours.size(); i++) {
+      std::vector<cv::Point> each_hull;
+      cv::convexHull(contours[i], each_hull);
+
+      allHullPoints.insert(allHullPoints.end(), each_hull.begin(),
+                           each_hull.end());
+    }
+    if (!allHullPoints.empty()) {
+      cv::convexHull(allHullPoints, hull);
+    }
+    cv::polylines(contour_result, hull, true, 166, 1);
+    cvshow("convex hull", contour_result, false);
+  }
 
   ///-------------------------------------------------------------------------------//--------------------------------//
   /* watershed*/
@@ -978,26 +1003,24 @@ void out_all_corner(
 
 int main() {
   std::cout << "Hello, PCL + OpenCV!" << std::endl;
+
   /*
   std::vector<END_PT> footprint;
   std::string filename = "/media/fys/T7 "
-                         "Shield/AdvancedGIS/rebuild/hdbscan_synth1/"
-                         "label11.ply"; // path as a hypermeter
+                         "Shield/AdvancedGIS/rebuild/hdbscan_ge005/GE_005/"
+                         "label73.ply"; // path as a hypermeter
   flood_fill(filename, footprint);
-  */
+*/
 
-  std::string name =
-      "/media/fys/T7 "
-      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
+  std::string name = "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_ge005/";
   // extract_C_F_simple(name);
   std::string wall_dir = "/media/fys/T7 "
-                         "Shield/AdvancedGIS/rebuild/hdbscan_synth1/walls/";
+                         "Shield/AdvancedGIS/rebuild/hdbscan_ge005/GE_005/";
   std::string c_pcd =
       "/media/fys/T7 "
-      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
+      "Shield/AdvancedGIS/rebuild/hdbscan_ge005/ceiling_clean.ply";
   std::string f_pcd =
-      "/media/fys/T7 "
-      "Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
+      "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_ge005/floor_clean.ply";
 
   std::vector<std::vector<std::vector<END_PT>>> whole_story;
   std::vector<CFs> story_cf;

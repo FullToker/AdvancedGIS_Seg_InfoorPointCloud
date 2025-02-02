@@ -10,7 +10,7 @@ def plane_detection(pcd, tolerance=50):
     all_planes = []
     while len(current_pcd.points) > tolerance:
         plane_model, inliers = current_pcd.segment_plane(
-            distance_threshold=0.01, ransac_n=3, num_iterations=1000
+            distance_threshold=0.03, ransac_n=3, num_iterations=1000
         )
         if len(inliers) < tolerance:
             break
@@ -77,7 +77,7 @@ def get_wall(
 
             # remove the strip according to the angle
             angle = calNorm_z(all_planes[i])
-            if abs(angle) > 1.4 and abs(angle) < 1.6:
+            if abs(angle) > 1.5 and abs(angle) < 1.6:
                 # if True:
                 combined_cloud += all_planes[i]
 
@@ -94,18 +94,19 @@ def get_wall(
 
 if __name__ == "__main__":
     # main(r"./mmde3d/preds/synth1.ply", r"./mmde3d/preds/synth1_nonsub_plane.ply")
-    """
     get_wall(
-        r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_sg_clean.ply",
-        r"/media/fys/T7 Shield/AdvancedGIS/read_test/synth1/synth1_floor_clean_index.ply",
-        # r"./mmde3d/preds/synth1_wall_plane.ply",
+        r"/media/fys/T7 Shield/AdvancedGIS/rebuild/GE005_new_second/GE005_new_walls.ply",
+        r"/media/fys/T7 Shield/AdvancedGIS/rebuild/GE005_new_second/GE005_new_cleanAllWalls.ply",
+        r"/media/fys/T7 Shield/AdvancedGIS/rebuild/GE005_new_second/all_walls/",
+        sigma=2000,
     )
-    """
 
     """some test for paconv model: synth1"""
+    """
     get_wall(
         plypath="./mmde3d/preds/synth1_paconv_walls.ply",
         outpath="./mmde3d/preds/synth1_paconv/all_walls.ply",
         wall_path="./mmde3d/preds/synth1_paconv/all_walls/",
         sigma=2000,
-    )
+    )   
+    """

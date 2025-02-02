@@ -5,8 +5,6 @@ This scripts aims to rebuild the room structure from all wall pointclouds, or fi
 
 import open3d as o3d
 import numpy as np
-import os
-import glob
 from scipy.spatial import ConvexHull
 import matplotlib.pyplot as plt
 import hdbscan
@@ -141,9 +139,11 @@ def select_pcd_with_labels(
 
             saved_pcd = o3d.geometry.PointCloud()
             saved_pcd.points = o3d.utility.Vector3dVector(pts)
+            """
             o3d.io.write_point_cloud(
-                f"./reconstruct/GE_005/label{index}.ply", saved_pcd
+                f"./reconstruct/GE005_new_second/label{index}.ply", saved_pcd
             )
+            """
 
     return new_pcd
 
@@ -151,6 +151,10 @@ def select_pcd_with_labels(
 # beacause there is no order for hdbsacn result, we need generate the label list,
 def get_labels_most_pts(labels: np.ndarray, threshold: int):
     """threshold:  labels must have at least 'threshold' points"""
+    # remove the noise
+    indices = np.where(labels == -1)[0]
+    labels = np.delete(labels, indices)
+
     unique_labels, counts = np.unique(labels, return_counts=True)
     filtered_labels = unique_labels[counts >= threshold]
 
@@ -165,9 +169,11 @@ def get_labels_most_pts(labels: np.ndarray, threshold: int):
 
 
 if __name__ == "__main__":
-    path = "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_005/ge005_c_allWalls.ply"
+    path = (
+        "/media/fys/T7 Shield/AdvancedGIS/rebuild/GE005_new_second/GE005_new_walls.ply"
+    )
     # path = "/media/fys/T7 Shield/AdvancedGIS/read_test/ge005_ds_paconv_walls.ply"
 
     filtered_pcd, labels = cluster_pcd_with_hdbscan(path)
-    selected_labels = get_labels_most_pts(labels, threshold=6000)
+    selected_labels = get_labels_most_pts(labels, threshold=4000)
     select_pcd_with_labels(filtered_pcd, labels, selected_labels, flag=1)

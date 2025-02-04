@@ -34,7 +34,7 @@ namespace fs = std::filesystem;
 // short name of point in pcl
 typedef pcl::PointXYZ PointT;
 // bool to control the window and the save
-const bool is_show = false;
+const bool is_show = true;
 const bool is_save = false;
 
 // when come back from the image to pcd
@@ -1021,6 +1021,16 @@ int main() {
       "Shield/AdvancedGIS/rebuild/hdbscan_ge005/ceiling_clean.ply";
   std::string f_pcd =
       "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_ge005/floor_clean.ply";
+
+  /*
+  std::string wall_dir = "/media/fys/T7
+  Shield/AdvancedGIS/rebuild/hdbscan_synth1/walls/"; std::string c_pcd =
+  "/media/fys/T7
+  Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
+  std::string f_pcd = "/media/fys/T7
+  Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
+
+  */
 
   std::vector<std::vector<std::vector<END_PT>>> whole_story;
   std::vector<CFs> story_cf;

@@ -133,6 +133,6 @@ if __name__ == "__main__":
     """
 
     convert2bin_xyzrgb_shifted(
-        "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/01164_GE006_c1.ply",
-        "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_c1.bin",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/GE006_downsample.ply",
+        "/media/fys/T7 Shield/AdvancedGIS/read_test/GE_006/ge006_downsample.bin",
     )

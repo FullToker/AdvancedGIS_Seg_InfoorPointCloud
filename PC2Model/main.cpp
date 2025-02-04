@@ -1012,6 +1012,7 @@ int main() {
   flood_fill(filename, footprint);
 */
 
+  /*
   std::string name = "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_ge005/";
   // extract_C_F_simple(name);
   std::string wall_dir = "/media/fys/T7 "
@@ -1021,16 +1022,11 @@ int main() {
       "Shield/AdvancedGIS/rebuild/hdbscan_ge005/ceiling_clean.ply";
   std::string f_pcd =
       "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_ge005/floor_clean.ply";
-
-  /*
-  std::string wall_dir = "/media/fys/T7
-  Shield/AdvancedGIS/rebuild/hdbscan_synth1/walls/"; std::string c_pcd =
-  "/media/fys/T7
-  Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
-  std::string f_pcd = "/media/fys/T7
-  Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
-
   */
+  
+  std::string wall_dir = "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_synth1/walls/";
+  std::string c_pcd = "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_ceiling.ply";
+  std::string f_pcd = "/media/fys/T7 Shield/AdvancedGIS/rebuild/hdbscan_synth1/synth1_paconv_floor.ply";
 
   std::vector<std::vector<std::vector<END_PT>>> whole_story;
   std::vector<CFs> story_cf;
